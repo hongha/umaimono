@@ -173,15 +173,21 @@
                     </div>
                 </div>
                 <div class="row">
+                <?php foreach ($posts as $post) {?>
                     <div class="col-md-4 col-lg-4 col-sm-6">
                         <div class="single_service">
-                            <a href=""><img src="{{ URL::asset('public/img/service_1.jpg') }}" alt=""></a>
+                            <a href="{{url('post/view/'.$post->id)}}">
+                            <div style="height: 300px; overflow: hidden; background: #F1E4F2;">
+                            <img src="avatar/{{$post->avatar}}" alt="">
+                            </div>
                             <div class="service_title">
                                 <i class="fa fa-truck"></i>
-                                <h4><a href="#">Moving locally or interstate</a></h4>
+                                <h4><a href="#" alt="{{$post->title}}"><?php echo substr($post->title,0,25); ?></a></h4>
                             </div>
+                            </a>
                         </div>
                     </div>
+                <?php }?>
                     <div class="col-md-4 col-lg-4 col-sm-6">
                         <div class="single_service">
                             <a href=""><img src="{{ URL::asset('public/img/service_2.jpg') }}" alt=""></a>

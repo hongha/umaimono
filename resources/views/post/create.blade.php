@@ -1,16 +1,26 @@
 @extends('layouts.app')
 @section('content')
+<!-- <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script> -->
+<script type="text/javascript" language="javascript" src="{{ URL::asset('ckeditor/ckeditor.js') }}" ></script>
+<script type="text/javascript" language="javascript" src="{{ URL::asset('ckfinder/ckfinder.js') }}" ></script>
 
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <form action="{{url('post/create')}}" method="POST" role="form">
+            <form action="{{url('post/create')}}" method="POST" role="form" enctype="multipart/form-data">
             {!! csrf_field() !!}
 				<legend>Form title</legend>
 				<div class="form-group">
-					<label for="">label</label>
+					<label for="">Đăng bài viết</label>
 					<input type="text" class="form-control" id="title" name="title" placeholder="Input title" onkeyup="ChangeToSlug();">
-					<input type="text" class="form-control" id="content" name="content" placeholder="Input content">
+                    <br>
+                    <div style="margin-bottom: 20px;">
+                     <img id="logo-img" onclick="document.getElementById('add-new-logo').click();" style="width: 250px; height: 250px; border-radius: 5px; border:solid 2px #A3B5F7;" src="{{ URL::asset('public/img/noimage.png') }}"/>
+                     <input style="display: none;" type="file" enctype="multipart/form-data"  id="add-new-logo" name="file" accept="image/*" onchange="addNewLogo(this)"/>
+                    </div>
+                    <br>
+                    <textarea id="content" name="content"></textarea>
+                    <br>
 					<input type="text" class="form-control" id="slug" name="slug" placeholder="Input slug" onkeyup="CheckSlug();">
                     <p id="thongbao" style="visibility:hidden">slug bị trùng</p>
 				</div>
@@ -85,5 +95,34 @@
             
         }
     }
+</script>
+<script>
+    CKEDITOR.replace( 'content',{
+        filebrowserBrowseUrl : '../ckfinder/ckfinder.html',
+        filebrowserImageBrowseUrl : '../ckfinder/ckfinder.html?type=Images',
+        filebrowserFlashBrowseUrl : '../ckfinder/ckfinder.html?type=Flash',
+        filebrowserUploadUrl      : '../ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files',
+        filebrowserImageUploadUrl : '../ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images',
+        filebrowserFlashUploadUrl : '../ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash'
+    });
+    
+</script>
+<script>
+  var addNewLogo = function(input){
+      if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+              //Hiển thị ảnh vừa mới upload lên
+              $('#logo-img').attr('src', e.target.result);
+          }
+          reader.readAsDataURL(input.files[0]);     
+      }
+  }
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var formdata = new Form
+  });
+  
+
 </script>
 @stop

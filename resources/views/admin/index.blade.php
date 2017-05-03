@@ -256,7 +256,7 @@
                       @foreach ($posts as $index => $post)
                         <tr>
                           <td>{{$index+1}}</td>
-                          <td>{{$post->title}}</td>
+                          <td><a href="{{url('post/view/'.$post->id)}}">{{$post->title}}</a></td>
                           <td>Deveint Inc</td>
                           <td class="hidden-phone">18</td>
                           <td class="vertical-align-mid">

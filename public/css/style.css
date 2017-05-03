@@ -1,3 +1,4 @@
+
 .avatar_manage_page{
 	height: 50px;
 	width: 50px;
@@ -11,4 +12,153 @@
 .hp_dropdown{
 	text-align: left !important;
 	background: black !important;
+}
+.register_social li a i{
+	list-style: none;
+	float: left;
+}
+.table>tbody>tr>td, .table>tfoot>tr>td{
+    vertical-align: middle;
+}
+@media screen and (max-width: 600px) {
+    table#cart tbody td .form-control{
+		width:20%;
+		display: inline !important;
+	}
+	.actions .btn{
+		width:36%;
+		margin:1.5em 0;
+	}
+	
+	.actions .btn-info{
+		float:left;
+	}
+	.actions .btn-danger{
+		float:right;
+	}
+	
+	table#cart thead { display: none; }
+	table#cart tbody td { display: block; padding: .6rem; min-width:320px;}
+	table#cart tbody tr td:first-child { background: #333; color: #fff; }
+	table#cart tbody td:before {
+		content: attr(data-th); font-weight: bold;
+		display: inline-block; width: 8rem;
+	}
+	table#cart tfoot td{display:block; }
+	table#cart tfoot td .btn{display:block;}
+	
+}
+/*style cho giỏ hàng trong trang mua hàng*/
+.row-bill {
+    border-bottom: 1px solid #f5f5f5;
+    padding: 7px 10px;
+    overflow: hidden;
+}
+.padding-none{
+	padding: 0px !important;
+}
+.text-align-left{
+	text-align: left !important;
+}
+.margin-left-right-16{
+	margin-left: 16px;
+	margin-right: 16px;
+}
+.font12{
+	font-size: 12px;
+}
+.font13{
+	font-size: 13px;
+}
+.font14{
+	font-size: 14px;
+}
+.font16{
+	font-size: 16px;
+}
+.float-left{
+	float: left;
+}
+.float-right{
+	float: right;
+}
+.bold700{
+	font-weight: 700;
+}
+.btn-reset {
+    height: 22px;
+    display: inline-block;
+    padding: 0 7px;
+    background-color: #fff;
+    color: #cf2127;
+    font-size: 11px;
+    border-radius: 2px;
+    line-height: 22px;
+    border: 1px solid #cf2127;
+    float: right;
+    text-decoration: none;
+}
+.btn-reset:hover{
+	background-color: #cf2127;
+	color:white;
+	text-decoration: none;
+}
+.cart-stats {
+    background: #eee;
+    padding: 2px 8px;
+    border-radius: 2px;
+    float: left;
+    display: block;
+    color: black;
+}
+.cart-stats:hover{
+	color: black;
+}
+.txt-green{
+	color: green;
+}
+.txt-red{
+	color: red;
+}
+.txt-blue{
+	color: #085ffb;
+}
+.clearfix {
+    clear: both;
+    overflow: hidden;
+}
+.pull-left{
+	width: 200px;
+    height: 19px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 12px;
+    color: rgba(0,0,0,.71);
+}
+.pull-left:focus{
+	outline: none;
+}
+.row-bill-grey {
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #eee;
+    padding: 5px 10px;
+    font-size: 13px;
+    overflow: hidden;
+}
+.btn-book-first {
+    display: block;
+    margin: 12px 10px 15px;
+    background-color: #cf2127;
+    color: #fff;
+    font-size: 15px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    border-radius: 4px;
+}
+.btn-book-first:hover{
+	text-decoration: none;
+	color: white;
+	background-color: #cf2112;
 }

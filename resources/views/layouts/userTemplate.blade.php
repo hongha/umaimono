@@ -98,12 +98,13 @@
 										    }
 										?>
                                     </li>
+                                    <?php if(isset(Auth::user()->name)){ ?>
                                     <li>
                                         <div class="dropdown" >
                                             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"><?php echo Auth::user()->name; ?>
                                                 <span class="caret"></span></button>
                                                 <ul class="dropdown-menu hp_dropdown">
-                                                <?php 
+                                                <?php
                                                     if(Auth::user()->role == 0){
                                                         ?>
                                                             <li ><a href="#">Trang cá nhân</a></li>
@@ -114,10 +115,11 @@
                                                         <?php
                                                     }
                                                 ?>
-                                                  <li ><a href="#">Đăng xuất</a></li>
+                                                  <li ><a href="{{ url('/logout') }}">Đăng xuất</a></li>
                                                 </ul>
                                         </div>
                                     </li>
+                                    <?php } ?>
                                 </ul>
                             </div>
                         </div>

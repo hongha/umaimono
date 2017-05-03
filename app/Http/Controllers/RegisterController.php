@@ -46,8 +46,6 @@ class RegisterController extends Controller
     		$passwordConfirm = $request->input('passwordConfirm');
             $role = $request->input('role');
             $role_arr = array("0","1","2","3","4");
-            var_dump($role_arr);
-            var_dump($role);
             if(Input::hasFile('file')){
                 $file = Input::file('file');
                 $extension = $file->getClientOriginalExtension();

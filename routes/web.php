@@ -1,20 +1,4 @@
 <?php
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| This file is where you may define all of the routes that are handled
-| by your application. Just tell Laravel the URIs it should respond
-| to using a Closure or controller method. Build something great!
-|
-*/
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
 Route::get('/','HomeController@getIndex');
 Route::get('logout', 'LoginController@getLogout');
 Route::get('userProfile', 'HomeController@userProfile');
@@ -46,4 +30,18 @@ Route::group(['prefix' => 'post'], function () {
     Route::post('create', 'PostController@store');
     Route::get('edit/{id}', 'PostController@edit');
     Route::post('edit/{id}', 'PostController@update');
+    Route::get('delete/{id}', 'PostController@delete');
+    Route::get('view/{id}', 'PostController@view');
+    Route::get('add_food/{id_food}', 'PostController@add_food');
+    Route::post('add_food/{id_food}', 'PostController@add_food');
+    Route::get('minus_food/{id_food}', 'PostController@minus_food');
+    Route::post('minus_food/{id_food}', 'PostController@minus_food');
+    Route::get('reset_menu/{id_user}', 'PostController@reset_menu');
+    Route::post('reset_menu/{id_user}', 'PostController@reset_menu');
 });
+Route::get('map', 'GoogleController@map');
+Route::get('google_map', 'GoogleController@google_map');
+Route::get('google/buy/{id}', 'GoogleController@buy');
+Route::get('bai2', 'GoogleController@bai2');
+
+

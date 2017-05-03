@@ -13,7 +13,7 @@ class AdminController extends Controller
     }
     public function index()
     {
-        $users = DB::table('users')->get();
+        $users = DB::table('users')->where('delete_flg', '0')->get();
         $admins = array();
         $managers = array();
         $restaurants = array();
@@ -40,7 +40,7 @@ class AdminController extends Controller
                 array_push($shoppers, $user);
             }
         }
-        $posts = DB::table('posts')->get();
+        $posts = DB::table('posts')->where('delete_flg', '0')->get();
         return view('admin.index', compact('admins','managers','restaurants','branchs','shippers','shoppers','posts'));
         // return view('admin.index', ['shoppers' => $shoppers],['posts' => $posts]); chỉ trả về được 2 mảng
     }

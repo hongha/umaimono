@@ -33,7 +33,8 @@ class LoginController extends Controller
     		$email = $request->input('email');
     		$password = $request->input('password');
     		if(Auth::attempt(['email' => $email, 'password' => $password], $request->has('remember'))){
-    			return redirect()->intended('/');
+    			// return redirect()->intended('/');
+                return redirect()->back();
     		}else{
     			$errors = new MessageBag(['errorlogin' => 'Email hoặc mật khẩu không đúng!']);
     			return redirect()->back()->withErrors($errors)->withInput();
@@ -41,12 +42,6 @@ class LoginController extends Controller
     	}
     }
     public function getLogout(){
-        // if(Auth::check()){
-        //     Auth::logout();
-        //     return redirect('login');
-        // }else{
-        //     return redirect('login');
-        // }
         Auth::logout();
             return redirect()->back();
         
