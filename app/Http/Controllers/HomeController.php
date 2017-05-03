@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     public function getIndex(){
-    	return view('userProfile');
+    	return view('index');
     }
     public function userProfile(){
     	return view('userProfile');

@@ -1,0 +1,14 @@
+.avatar_manage_page{
+	height: 50px;
+	width: 50px;
+}
+.line-height{
+	line-height: 50px;
+}
+.header_social_bookmark a:hover{
+	color: red;
+}
+.hp_dropdown{
+	text-align: left !important;
+	background: black !important;
+}

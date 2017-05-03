@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ URL::asset('public/nprogress/nprogress.css') }}" />
     <link rel="stylesheet" href="{{ URL::asset('public/animate.css/animate.min.css') }}" />
     <link rel="stylesheet" href="{{ URL::asset('public/css/custom.min.css') }}" />
+    <link rel="stylesheet" href="{{ URL::asset('public/css/style.css') }}" />
     <script type="text/javascript" src="{{ URL::asset('public/js/jquery.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('public/bootstrap/dist/js/bootstrap.min.js') }}"></script>
   </head>

@@ -23,8 +23,10 @@ Route::group(['middleware' => 'viewer'], function () {
     Route::get('login', 'LoginController@getLogin');
 	Route::post('login', 'LoginController@postLogin');
 	Route::get('register', 'RegisterController@create');
-	Route::post('register', 'RegisterController@store');
+	// Route::post('register', 'RegisterController@store');
+    Route::post('register', 'RegisterController@store');
 });
+
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('xxx', function ()    {
     	echo "day la admin";

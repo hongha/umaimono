@@ -29,34 +29,8 @@
             <div class="clearfix"></div>
           </div>
           <div class="x_content">
-            <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
-              <div class="profile_img">
-                <div id="crop-avatar">
-                  <!-- Current avatar -->
-                  <img class="img-responsive avatar-view" src="{{ URL::asset('public/img/avatar.jpg') }}" alt="Avatar" title="Change the avatar">
-                </div>
-              </div>
-              <h3>Samuel Doe</h3>
-
-              <ul class="list-unstyled user_data">
-                <li><i class="fa fa-map-marker user-profile-icon"></i> San Francisco, California, USA
-                </li>
-
-                <li>
-                  <i class="fa fa-briefcase user-profile-icon"></i> Software Engineer
-                </li>
-
-                <li class="m-top-xs">
-                  <i class="fa fa-external-link user-profile-icon"></i>
-                  <a href="http://www.kimlabs.com/profile/" target="_blank">www.kimlabs.com</a>
-                </li>
-              </ul>
-
-              <a class="btn btn-success"><i class="fa fa-edit m-right-xs"></i>Edit Profile</a>
-              <br />
-
-            </div>
-            <div class="col-md-9 col-sm-9 col-xs-12">
+            
+            <div class="col-md-12 col-sm-12 col-xs-12">
 
 
 
@@ -73,34 +47,201 @@
                   <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
 
                     <!-- start recent activity -->
-
+                    <h3>Admins</h3>
                     <table class="data table table-striped no-margin">
                       <thead>
                         <tr>
                           <th>#</th>
                           <th>Username</th>
-                          <th>Client Company</th>
+                          <th>Email</th>
+                          <th>Create at</th>
+                          <th>Avatar</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <?php 
+                        $index = 1;
+                        foreach ($admins as $admin){
+                          ?>
+                            <tr>
+                              <td><span class="line-height"><?php echo $index++; ?></span></td>
+                              <td><span class="line-height">{{$admin->name}}</span></td>
+                              <td><span class="line-height">{{$admin->email}}</span></td>
+                              <td><span class="line-height">{{$admin->created_at}}</span></td>
+                              <td class="vertical-align-mid">
+                                <img class="avatar_manage_page" src="../avatar/<?php echo $admin->avatar;?>" alt="{{$admin->name}}">
+                              </td>
+                            </tr>
+                          <?php
+                        }
+                      ?>
+                      
+                      </tbody>
+                    </table>
+                    <h3>Managers</h3>
+                    <table class="data table table-striped no-margin">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Username</th>
+                          <th>Email</th>
                           <th class="hidden-phone">Hours Spent</th>
                           <th>Contribution</th>
                         </tr>
                       </thead>
                       <tbody>
-                      @foreach ($users as $index => $user)
-                        <tr>
-                          <td>{{$index+1}}</td>
-                          <td>{{$user->name}}</td>
-                          <td>Deveint Inc</td>
-                          <td class="hidden-phone">18</td>
-                          <td class="vertical-align-mid">
-                            <div class="progress">
-                              <div class="progress-bar progress-bar-success" data-transitiongoal="35"></div>
-                            </div>
-                          </td>
-                        </tr>
-                      @endforeach
+                      <?php 
+                        $index = 1;
+                        foreach ($managers as $manager){
+                          ?>
+                            <tr>
+                              
+                              <td><span class="line-height"><?php echo $index++; ?></span></td>
+                              <td><span class="line-height">{{$manager->name}}</span></td>
+                              <td><span class="line-height">{{$manager->email}}</span></td>
+                              <td><span class="line-height">{{$manager->created_at}}</span></td>
+                              <td class="vertical-align-mid">
+                                <img class="avatar_manage_page" src="avatar/<?php echo $manager->avatar;?>" alt="{{$admin->name}}">
+                              </td>
+                            </tr>
+                          <?php
+                        }
+                      ?>
+                      
                       </tbody>
                     </table>
-        
+                    <h3>Restaurants</h3>
+                    <table class="data table table-striped no-margin">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Username</th>
+                          <th>Email</th>
+                          <th class="hidden-phone">Hours Spent</th>
+                          <th>Contribution</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <?php 
+                        $index = 1;
+                        foreach ($restaurants as $restaurant){
+                          ?>
+                            <tr>
+                              <td><?php echo $index++; ?></td>
+                              <td>{{$restaurant->name}}</td>
+                              <td>{{$restaurant->email}}</td>
+                              <td class="hidden-phone">18</td>
+                              <td class="vertical-align-mid">
+                                <div class="progress">
+                                  <div class="progress-bar progress-bar-success" data-transitiongoal="35"></div>
+                                </div>
+                              </td>
+                            </tr>
+                          <?php
+                        }
+                      ?>
+                      
+                      </tbody>
+                    </table>
+                    <h3>Branchs</h3>
+                    <table class="data table table-striped no-margin">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Username</th>
+                          <th>Email</th>
+                          <th class="hidden-phone">Hours Spent</th>
+                          <th>Contribution</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <?php 
+                        $index = 1;
+                        foreach ($branchs as $branch){
+                          ?>
+                            <tr>
+                              <td><?php echo $index++; ?></td>
+                              <td>{{$branch->name}}</td>
+                              <td>{{$branch->email}}</td>
+                              <td class="hidden-phone">18</td>
+                              <td class="vertical-align-mid">
+                                <div class="progress">
+                                  <div class="progress-bar progress-bar-success" data-transitiongoal="35"></div>
+                                </div>
+                              </td>
+                            </tr>
+                          <?php
+                        }
+                      ?>
+                      
+                      </tbody>
+                    </table>
+                    <h3>Shipper</h3>
+                    <table class="data table table-striped no-margin">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Username</th>
+                          <th>Email</th>
+                          <th class="hidden-phone">Hours Spent</th>
+                          <th>Contribution</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <?php 
+                        $index = 1;
+                        foreach ($shippers as $shipper){
+                          ?>
+                            <tr>
+                              <td><?php echo $index++; ?></td>
+                              <td>{{$shipper->name}}</td>
+                              <td>{{$shipper->email}}</td>
+                              <td class="hidden-phone">18</td>
+                              <td class="vertical-align-mid">
+                                <div class="progress">
+                                  <div class="progress-bar progress-bar-success" data-transitiongoal="35"></div>
+                                </div>
+                              </td>
+                            </tr>
+                          <?php
+                        }
+                      ?>
+                      
+                      </tbody>
+                    </table>
+                    <h3>Shopper</h3>
+                    <table class="data table table-striped no-margin">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Username</th>
+                          <th>Email</th>
+                          <th class="hidden-phone">Hours Spent</th>
+                          <th>Contribution</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <?php 
+                        $index = 1;
+                        foreach ($shoppers as $shopper){
+                          ?>
+                            <tr>
+                              <td><?php echo $index++; ?></td>
+                              <td>{{$shopper->name}}</td>
+                              <td>{{$shopper->email}}</td>
+                              <td class="hidden-phone">18</td>
+                              <td class="vertical-align-mid">
+                                <div class="progress">
+                                  <div class="progress-bar progress-bar-success" data-transitiongoal="35"></div>
+                                </div>
+                              </td>
+                            </tr>
+                          <?php
+                        }
+                      ?>
+                      
+                      </tbody>
+                    </table>
                     <table class="data table table-striped no-margin">
                       <thead>
                         <tr>
