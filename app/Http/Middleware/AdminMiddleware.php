@@ -18,11 +18,11 @@ class AdminMiddleware
         if(!Auth::check()){
             return redirect('login');
         }else{
-            if(Auth::user()->role == 0){
-                return redirect('userProfile');
+            if(Auth::user()->role == 5){
+                return $next($request);
             }
             else{
-                return $next($request);
+                return redirect()->intended('/');
             }
         }
     }

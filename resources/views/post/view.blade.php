@@ -159,13 +159,13 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
       <div class="w3-container w3-card-2 w3-white w3-round margin-left-right-16"><br>
         <img src="../../avatar/{{$user->avatar}}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
         <span class="w3-right w3-opacity">1 min</span>
-        <h4>{{Auth::user()->name}}</h4><br>
+        <h4>{{$user->name}}</h4><br>
         <div class="w3-row-padding" style="margin:0 -16px">
           <div class="w3-half">
             <img src="../../avatar/{{$post->avatar}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
           </div>
           <?php echo $post->content; ?>
-        <a href="{{url('google/buy/'.$post->id)}}"><button onclick="add_food()">dat hang</button></a>
+        <button onclick="themHang({{$post->id}})">cho vao gio</button>
         
         
         </div>
@@ -207,9 +207,9 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
             <span class="float-left bold700" id="number_total">{{$number_total}}&nbsp;</span>
             <span class="float-left">Phần</span>
             </a>
-            <a href="javascript:void(0)" class="btn-reset" onclick="reset_menu({{Auth::user()->id}})">Reset</a>
+            <a href="javascript:void(0)" class="btn-reset" onclick="reset_menu()">Reset</a>
           </div>
-          <?php foreach ($shopping_carts as $shopping_cart) {?>
+          <?php if($shopping_carts != null){foreach ($shopping_carts as $shopping_cart) {?>
             <div class="row-bill reset_menu" id="{{$shopping_cart->id}}">
               <a href="javascript:void(0)" onclick="add_food({{$shopping_cart->id}})"><span class="fa fa-plus-square txt-green"></span></a>
               <span class="txt-red bold700 font12" style="display: inline-block; min-width: 18px; text-align: center;" >{{$shopping_cart->number}}</span>
@@ -220,7 +220,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
                 <span class="bold700 font12" style="float: right;">{{$shopping_cart->price*$shopping_cart->number}}đ</span>
               </div>
             </div>
-          <?php }?>
+          <?php }}?>
           
           <div class="row-bill-grey">
             <span class="float-left">Cộng</span>
@@ -234,7 +234,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
             <span class="float-left font16 bold700">Tạm tính</span>
             <span class="font16 float-right bold700 txt-blue" id="money_Temporarily">{{$price_total}}đ</span>
           </div>
-          <a href="javascript:void(0)" class="btn-book-first">
+          <a href="javascript:void(0)" class="btn-book-first after-lick" onclick="checkout()">
           <i class="fa fa-check-circle"></i>
           Đặt trước</a>
         </div>
@@ -347,24 +347,23 @@ function minus_food(id_food){
         var money_Temporarily = document.getElementById("money_Temporarily");
         var number_total = document.getElementById("number_total");
         number_total.innerHTML = parseInt(number_total.innerHTML,10) - 1 + '&nbsp;';
-        money_total.innerHTML = parseInt(money_total.innerHTML,10) - price_one_food;
-        money_Temporarily.innerHTML = parseInt(money_total.innerHTML,10);
+        money_total.innerHTML = parseInt(money_total.innerHTML,10) - price_one_food+ 'đ';
+        money_Temporarily.innerHTML = parseInt(money_total.innerHTML,10) + 'đ';
         spans[1].innerHTML = number_food - 1;
-        spans[4].innerHTML = prices - price_one_food;
+        spans[4].innerHTML = prices - price_one_food + 'đ';
         if(number_food <= 1){
           document.getElementById(id_food).remove();
         }
     }
 });
 }
-function reset_menu(id_user){
+function reset_menu(){
 
   $.ajax({
-    url: '/umaimono/post/reset_menu/'+id_user,
+    url: '/umaimono/post/reset_menu',
     type: 'POST',
     data: {
         "_token": "{{ csrf_token() }}",
-        "id": id_user
         },
      success: function (data) {
       $('.reset_menu').remove();
@@ -376,6 +375,30 @@ function reset_menu(id_user){
       money_Temporarily.innerHTML = 0;
     }
 });
+}
+function checkout(){
+  var data =<?php echo json_encode($shopping_carts, JSON_FORCE_OBJECT) ?>;
+  console.log(data);
+  // var span = document.getElementById("number_total");
+  // var number_total = parseInt(span.innerHTML,10);
+  if(!data){
+    window.location.href = "http://localhost/umaimono/login";
+  }else{
+    window.location.href = "http://localhost/umaimono/buy";
+  }
+  
+}
+function themHang(id_post){
+  $.ajax({
+    url: '/umaimono/post/them_hang'+id_post,
+    type: 'POST',
+    data: {
+        "_token": "{{ csrf_token() }}",
+        "id":id_post
+        },
+    success: function (data) {
+    }
+  });
 }
 </script>
 <script src="{{ URL::asset('public/js/jquery.min.js') }}"></script>

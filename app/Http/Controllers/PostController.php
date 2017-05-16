@@ -13,7 +13,7 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Session;
 use App\User;
 use App\ShoppingCart;
-
+use Illuminate\Support\Collection;
 class PostController extends Controller
 {
 	// public function __construct()
@@ -22,7 +22,7 @@ class PostController extends Controller
  //    }
     public function index()
     {
-        return view('Posts/index');
+        return view('post/index');
     }
     public function create(){
     	if(Auth::check()){
@@ -109,17 +109,23 @@ class PostController extends Controller
         }else{
             $post = Post::find($id);
             $user = User::find($post->user_id);
-            $shopping_carts = DB::table('shopping_carts')->select('id', 'food_name', 'price','number')->where('id_user','=', Auth::user()->id)->get();
             $number_total = 0;
             $price_total = 0;
-            foreach ($shopping_carts as $shopping_cart) {
-                $number_total = $number_total + $shopping_cart->number;
-                $price_total = $price_total + $shopping_cart->price*$shopping_cart->number;
-            }
+               
             if($post->delete_flg == 1){
                 return view('errors.404');
             }else{
-                return view('post.view', compact('post','user','shopping_carts','number_total','price_total'));
+                if (Auth::check()) {
+                    $shopping_carts = DB::table('shopping_carts')->select('id', 'food_name', 'price','number')->where('id_user','=', Auth::user()->id)->get();
+                    foreach ($shopping_carts as $shopping_cart) {
+                        $number_total = $number_total + $shopping_cart->number;
+                        $price_total = $price_total + $shopping_cart->price*$shopping_cart->number;
+                        }
+                        return view('post.view', compact('post','user','shopping_carts','number_total','price_total'));
+                    }else{
+                        $shopping_carts = null;
+                        return view('post.view', compact('post','user','shopping_carts','number_total','price_total'));
+                } 
             }
         }
     }
@@ -143,6 +149,16 @@ class PostController extends Controller
         return response()->json($shopping_cart);
     }
     public function reset_menu(){
-        dd('xxx');
+        if(Auth::check()){
+            $shopping_cart = DB::table('shopping_carts')->where('id_user','=', Auth::user()->id)->delete();
+            return response()->json($shopping_cart);
+        }else{
+          return  redirect('login'); 
+        }
+    }
+    public function them_hang($id_post){
+        
+        $shopping_carts = DB::table('shopping_carts')->select('id', 'food_name', 'price','number')->where('id_user','=', Auth::user()->id)->get();
+
     }
 }

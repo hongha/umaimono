@@ -64,9 +64,9 @@
                 <select class=" form-control" data-live-search="true" style="border-radius: 3px; margin-bottom: 20px;" name="role" required>
                   <option value="">Bạn muốn đăng ký loại tài khoản nào?</option>
                   <option value="0">Người dùng</option>
-                  <option value="1">Nhà Hàng</option>
+                  <option value="1">Người Ship</option>
                   <option value="2">Chi nhánh nhà hàng</option>
-                  <option value="3">Người Ship</option>
+                  <option value="3">Nhà Hàng</option>
                   <option value="4">Công ty Ship</option>
                 </select>
                 @if($errors->has('role'))

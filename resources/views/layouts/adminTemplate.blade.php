@@ -6,7 +6,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>Gentellela Alela! | </title>
   <link href="{{ URL::asset('public/bootstrap-daterangepicker/daterangepicker.css') }}" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -16,7 +15,10 @@
     <link rel="stylesheet" href="{{ URL::asset('public/animate.css/animate.min.css') }}" />
     <link rel="stylesheet" href="{{ URL::asset('public/css/custom.min.css') }}" />
     <link rel="stylesheet" href="{{ URL::asset('public/css/style.css') }}" />
+    <link rel="stylesheet" href="{{ URL::asset('public/css/notification/alertify.core.css') }}" />
+    <link rel="stylesheet" href="{{ URL::asset('public/css/notification/alertify.default.css') }}" />
     <script type="text/javascript" src="{{ URL::asset('public/js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('public/js/alertify.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('public/bootstrap/dist/js/bootstrap.min.js') }}"></script>
   </head>
 

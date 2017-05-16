@@ -16,7 +16,7 @@
 				<legend>Form title</legend>
 				<div class="form-group">
 					<label for="">label</label>
-					<input type="text" class="form-control" id="title" name="title" placeholder="Input title" onkeyup="ChangeToSlug();" value="{{$post->title}}">
+					<input type="text" class="form-control" id="title" name="title" placeholder="Input title" onkeyup="ChangeToSlug();" value="{{$post->title}}" required="">
 					<br>
 					<textarea id="content" name="content">{{$post->content}}</textarea>
 					<br>

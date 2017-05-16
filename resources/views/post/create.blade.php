@@ -12,7 +12,7 @@
 				<legend>Form title</legend>
 				<div class="form-group">
 					<label for="">Đăng bài viết</label>
-					<input type="text" class="form-control" id="title" name="title" placeholder="Input title" onkeyup="ChangeToSlug();">
+					<input type="text" class="form-control" id="title" name="title" placeholder="Input title" onkeyup="ChangeToSlug();" required="">
                     <br>
                     <div style="margin-bottom: 20px;">
                      <img id="logo-img" onclick="document.getElementById('add-new-logo').click();" style="width: 250px; height: 250px; border-radius: 5px; border:solid 2px #A3B5F7;" src="{{ URL::asset('public/img/noimage.png') }}"/>

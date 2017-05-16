@@ -17,7 +17,7 @@
         <div class="col-md-4">
             <table class="table table-striped">
                 <tr ng-repeat='post in posts'>
-                    <td><% post.title %></td>
+                    <!-- <td><% post.title %></td> -->
                 </tr>
             </table>
         </div>
