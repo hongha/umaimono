@@ -72,7 +72,7 @@
                           <th>Món ăn</th>
                           <th>Avatar</th>
                           <th class="hidden-phone">Giá</th>
-                          <th>Quản lý</th>
+                          <th>Thao tác</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -106,7 +106,7 @@
                           <th>Bài đăng</th>
                           <th>Avatar</th>
                           <th class="hidden-phone">Ngày sửa cuối</th>
-                          <th>Contribution</th>
+                          <th>Thao tác</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -135,87 +135,37 @@
                   <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
 
                     <!-- start user projects -->
-                    <table class="data table table-striped no-margin">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Project Name</th>
-                          <th>Client Company</th>
-                          <th class="hidden-phone">Hours Spent</th>
-                          <th>Contribution</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td>New Company Takeover Review</td>
-                          <td>Deveint Inc</td>
-                          <td class="hidden-phone">18</td>
-                          <td class="vertical-align-mid">
-                            <div class="progress">
-                              <div class="progress-bar progress-bar-success" data-transitiongoal="35"></div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>2</td>
-                          <td>New Partner Contracts Consultanci</td>
-                          <td>Deveint Inc</td>
-                          <td class="hidden-phone">13</td>
-                          <td class="vertical-align-mid">
-                            <div class="progress">
-                              <div class="progress-bar progress-bar-danger" data-transitiongoal="15"></div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>3</td>
-                          <td>Partners and Inverstors report</td>
-                          <td>Deveint Inc</td>
-                          <td class="hidden-phone">30</td>
-                          <td class="vertical-align-mid">
-                            <div class="progress">
-                              <div class="progress-bar progress-bar-success" data-transitiongoal="45"></div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>4</td>
-                          <td>New Company Takeover Review</td>
-                          <td>Deveint Inc</td>
-                          <td class="hidden-phone">28</td>
-                          <td class="vertical-align-mid">
-                            <div class="progress">
-                              <div class="progress-bar progress-bar-success" data-transitiongoal="75"></div>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+
                     <!-- end user projects -->
 
                   </div>
                   <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab" data-toggle="tab">
+                    <?php 
+                      foreach ($restaurant_info as $restaurant_info){}
+                    ?>
                     <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
                       <div class="profile_img">
                         <div id="crop-avatar">
-                          <!-- Current avatar -->
-                          <img class="img-responsive avatar-view" src="../avatar/{{Auth::user()->avatar}}" alt="Avatar" title="Change the avatar">
+                        <form enctype="multipart/form-data">
+                          <i class="fa fa-camera" aria-hidden="true" style="font-size: 40px;position: absolute;top: 20px;right: 20px;color: white;"></i>
+                         <img id="change-avatar-img" onclick="document.getElementById('change-avatar').click();" class="img-responsive avatar-view" src="../avatar/{{Auth::user()->avatar}}" alt="Thay hình đại diện" />
+                         <input style="display: none;" type="file" enctype="multipart/form-data"  id="change-avatar" name="change-avatar" accept="image/*" onchange="changeAvatar(this)"/>
+                        </form>
                         </div>
                       </div>
-                      <h3>{{Auth::user()->name}}</h3>
+                      <h3>{{{ isset($restaurant_info->restaurant_name) ? $restaurant_info->restaurant_name : 'Chưa cập nhật' }}}</h3>
 
                       <ul class="list-unstyled user_data">
-                        <li><i class="fa fa-map-marker user-profile-icon"></i> San Francisco, California, USA
+                        <li><i class="fa fa-map-marker user-profile-icon"></i> {{{ isset($restaurant_info->address) ? $restaurant_info->address : 'Chưa cập nhật' }}}
                         </li>
 
                         <li>
-                          <i class="fa fa-briefcase user-profile-icon"></i> Software Engineer
+                          <i class="fa fa-briefcase user-profile-icon"></i> {{{ isset($restaurant_info->phone_number) ? $restaurant_info->phone_number : 'Chưa cập nhật' }}}
                         </li>
 
                         <li class="m-top-xs">
                           <i class="fa fa-external-link user-profile-icon"></i>
-                          <a href="http://www.kimlabs.com/profile/" target="_blank">www.kimlabs.com</a>
+                          <a href="{{{ isset($restaurant_info->link_website) ? $restaurant_info->link_website : '#' }}}" target="_blank">{{{ isset($restaurant_info->link_website) ? $restaurant_info->link_website : 'Chưa cập nhật' }}}</a>
                         </li>
                       </ul>
 
@@ -224,6 +174,7 @@
 
                     </div>
                     <div class="col-md-9 col-sm-9 col-xs-12">
+                    <p><?php if(isset($restaurant_info->introduction)){echo($restaurant_info->introduction);}else{echo '';} ?></p>
                     <div style="width: 100%; height: 370px;">
                       <div id="curent-position"></div>
                     </div>
@@ -237,11 +188,8 @@
         </div>
       </div>
     </div>
-    <?php 
-        foreach ($restaurant_info as $restaurant_info){}
-    ?>
   </div>
-<!-- start Modal foods -->
+<!-- start Modal foods create-->
 <div id="myModal-foods" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
@@ -258,7 +206,7 @@
         <div class="row">
           <div style="width: 100px;float: left; margin-left: 15px;">
            <img id="logo-img" onclick="document.getElementById('add-new-logo').click();" style="width: 100px; height: 100px; border-radius: 5px; border:solid 2px #A3B5F7;" src="{{ URL::asset('public/img/noimage.png') }}"/>
-           <input style="display: none;" type="file" enctype="multipart/form-data"  id="add-new-logo" name="file" accept="image/*" onchange="addNewLogo(this)"/>
+           <input style="display: none;" type="file" enctype="multipart/form-data"  id="add-new-logo" name="file" accept="image/*" onchange="addNewLogo(this,'#logo-img')"/>
           </div>
           <input type="text" name="food-name" style="width: 70%; margin-left: 130px; border-radius: 5px; " class="form-control" placeholder="Tên món ăn" required="">
           <br>
@@ -290,8 +238,8 @@
 
   </div>
 </div>
-<!-- end modal foods -->
-<!-- start Modal posts -->
+<!-- end modal foods create-->
+<!-- start Modal posts create -->
 <div id="myModal-posts" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
@@ -308,13 +256,13 @@
         <div class="row">
           <div style="width: 100px;float: left; margin-left: 15px;">
            <img id="post-avatar" onclick="document.getElementById('add-new-avatar').click();" style="width: 100px; height: 100px; border-radius: 5px; border:solid 2px #A3B5F7;" src="{{ URL::asset('public/img/noimage.png') }}"/>
-           <input style="display: none;" type="file" enctype="multipart/form-data"  id="add-new-avatar" name="post-avatar" accept="image/*" onchange="addNewAvatar(this)"/>
+           <input style="display: none;" type="file" enctype="multipart/form-data"  id="add-new-avatar" name="post-avatar" accept="image/*" onchange="addNewLogo(this,'#post-avatar')"/>
           </div>
 
           <input type="text" class="form-control" id="title" name="title" placeholder="Nhập vào tiêu đề bài viết" onkeyup="ChangeToSlug();" required="" style="width: 70%; margin-left: 130px; border-radius: 5px; ">
           <br>
 
-          <input type="text" class="form-control" id="slug" name="slug" placeholder="Nhập vào đường dẫn hoặc giữ nguyên" onkeyup="CheckSlug();" style="width: 70%; margin-left: 130px;border-radius: 5px;" required="">
+          <input type="text" class="form-control" id="slug" name="slug" placeholder="Nhập vào đường dẫn hoặc giữ nguyên" onkeyup="CheckSlug('#slug','#thongbao');" style="width: 70%; margin-left: 130px;border-radius: 5px;" required="">
 
           <p id="thongbao" style="visibility:hidden; color: red;margin-left: 130px;">slug bị trùng bạn hãy nhập vào slug khác</p>
           </div>
@@ -331,7 +279,7 @@
 
   </div>
 </div>
-<!-- end modal posts -->
+<!-- end modal posts create -->
 <!-- start Modal edit posts -->
 <div id="myModal-posts-edit" class="modal fade" role="dialog">
   <div class="modal-dialog">
@@ -349,13 +297,13 @@
         <div class="row">
           <div style="width: 100px;float: left; margin-left: 15px;">
            <img id="post-avatar-edit" onclick="document.getElementById('add-new-avatar-edit').click();" style="width: 100px; height: 100px; border-radius: 5px; border:solid 2px #A3B5F7;" src="{{ URL::asset('public/img/noimage.png') }}"/>
-           <input style="display: none;" type="file" enctype="multipart/form-data"  id="add-new-avatar-edit" name="post-avatar-edit" accept="image/*" onchange="addNewAvatarEdit(this)" value="" />
+           <input style="display: none;" type="file" enctype="multipart/form-data"  id="add-new-avatar-edit" name="post-avatar-edit" accept="image/*" onchange="addNewLogo(this,'#post-avatar-edit')" value="" />
           </div>
 
           <input type="text" class="form-control" id="title-edit" name="title-edit" placeholder="Nhập vào tiêu đề bài viết" onkeyup="ChangeToSlugEdit();" required="" style="width: 70%; margin-left: 130px; border-radius: 5px; ">
           <br>
 
-          <input type="text" class="form-control" id="slug-edit" name="slug-edit" placeholder="Nhập vào đường dẫn hoặc giữ nguyên" onkeyup="CheckSlugEdit();" style="width: 70%; margin-left: 130px;border-radius: 5px;" required="">
+          <input type="text" class="form-control" id="slug-edit" name="slug-edit" placeholder="Nhập vào đường dẫn hoặc giữ nguyên" onkeyup="CheckSlug('#slug-edit','#thongbao-edit');" style="width: 70%; margin-left: 130px;border-radius: 5px;" required="">
 
           <p id="thongbao-edit" style="visibility:hidden; color: red;margin-left: 130px;">slug bị trùng bạn hãy nhập vào slug khác</p>
           </div>
@@ -389,7 +337,7 @@
         <div class="row">
           <div style="width: 100px;float: left; margin-left: 15px;">
            <img id="food-avatar-edit" onclick="document.getElementById('add-new-avatar-food').click();" style="width: 100px; height: 100px; border-radius: 5px; border:solid 2px #A3B5F7;" src="{{ URL::asset('public/img/noimage.png') }}"/>
-           <input style="display: none;" type="file" enctype="multipart/form-data"  id="add-new-avatar-food" name="file" accept="image/*" onchange="addNewFoodAvatar(this)"/>
+           <input style="display: none;" type="file" enctype="multipart/form-data"  id="add-new-avatar-food" name="file" accept="image/*" onchange="addNewLogo(this,'#food-avatar-edit')"/>
           </div>
           <input type="text" name="food-name-edit" id="food-name-edit" style="width: 70%; margin-left: 130px; border-radius: 5px; " class="form-control" placeholder="Tên món ăn" required="">
           <br>
@@ -429,26 +377,36 @@
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Sửa thông tin nhà hàng</h4>
       </div>
+      <form action="{{url('restaurant/update_res_profile/'.$restaurant_info->id)}}" method="post" enctype="multipart/form-data">
+      {{ csrf_field() }}
       <div class="modal-body">
-      <form >
-
         <div class="col-md-12">
         <div class="col-md-6 col-xs-12 col-sm-12">
-          <input type="text" class="style-input form-control margin-bottom-15" placeholder="Địa chỉ website" name="link_website" value="{{{ isset($restaurant_info->link_website) ? $restaurant_info->link_website : '' }}}">
-          <div id="ckeContainer">
-          <textarea id="edit-restaurant-profile" name="edit-restaurant-profile" class="margin-bottom-15" required="" name="introduction">{{{ isset($restaurant_info->introduction) ? $restaurant_info->introduction : '' }}}</textarea>
-          </div>
+        <div class="row">
+            <div class="col-md-3 col-xs-12 col-sm-12">
+              <img id="change-avatar-img" onclick="document.getElementById('change-avatar').click();" style="width: 100px; height: 100px; border-radius: 5px; border:solid 2px #A3B5F7;" src="../avatar/{{Auth::user()->avatar}}"/>
+              <input style="" type="file" enctype="multipart/form-data"  id="change-avatar" name="change-avatar" accept="image/*" onchange="addNewLogo(this,'#change-avatar-img')"/>
+            </div>
+            <div class="col-md-9 col-xs-12 col-sm-12">
+              <input type="text" class="style-input form-control margin-bottom-15" placeholder="Địa chỉ website" name="link_website" value="{{{ isset($restaurant_info->link_website) ? $restaurant_info->link_website : '' }}}">
+              <input type="text" class="style-input form-control margin-bottom-15" placeholder="Tên nhà hàng" name="restaurant_name" value="{{{ isset($restaurant_info->restaurant_name) ? $restaurant_info->restaurant_name : '' }}}">
+            </div>
+              
+              <div id="ckeContainer" class="col-md-12">
+              <textarea id="edit-restaurant-profile" class="margin-bottom-15" required="" name="introduction">{{{ isset($restaurant_info->introduction) ? $restaurant_info->introduction : '' }}}</textarea>
+            </div>
+        </div>
         </div>
         <div class="col-md-6 col-xs-12 col-sm-12">
           <input type="text" class="style-input form-control margin-bottom-15" placeholder="Số điện thoại liên hệ" name="phone_number" required="" value="{{{ isset($restaurant_info->phone_number) ? $restaurant_info->phone_number : '' }}}">
-          <div style="width: 100%; height: 370px;">
+          <div style="width: 100%; height: 420px;">
           <input id="pac-input" class="controls" type="text" placeholder="Địa chỉ nhà hàng" name="address" required="" value="{{{ isset($restaurant_info->address) ? $restaurant_info->address : '' }}}">
             <div id="map"></div>
             <div id="infowindow-content">
           <span id="place-name"  class="title"></span>
           <span id="place-address"></span>
-          <input type="text" name="lat" hidden="" value="{{{ isset($restaurant_info->lat) ? $restaurant_info->lat : '' }}}">
-          <input type="text" name="lng" hidden="{{{ isset($restaurant_info->lng) ? $restaurant_info->lng : '' }}}">
+          <input type="text" name="lat" id="lat" hidden="" value="{{{ isset($restaurant_info->lat) ? $restaurant_info->lat : '' }}}">
+          <input type="text" name="lng" id="lng" hidden="" value="{{{ isset($restaurant_info->lng) ? $restaurant_info->lng : '' }}}">
           </div>
           </div>
         </div>
@@ -457,8 +415,8 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
         <button type="submit" class="btn btn-success">Lưu</button>
-      </form>
       </div>
+    </form>  
     </div>
   </div>
 </div>
@@ -481,86 +439,131 @@
         Map(curentPosition,resInfo.lat,resInfo.lng);
         });
       }
-      console.log(resInfo);
       $("#editRestaurant").on("shown.bs.modal", function () {
-        initMap();
+        if(resInfo.lat == 0 ||resInfo.lng == 0){
+          initMap(21.0277644,105.83415979999995);
+        }else{
+          initMap(resInfo.lat,resInfo.lng);
+        }
         finder();
       });
+
       
       document.getElementById('ckeContainer').style.margin="0px 0px 15px 0px";
 
-      function Map(mapDiv,lat,lng){
-        var pos = {'lat': lat, 'lng': lng};
-        curentPositionMap = new google.maps.Map(mapDiv, {
-          center: pos,
-          zoom: 13,
-        });
-        var marker = new google.maps.Marker({
-          position: pos,
-          map: curentPositionMap,
-        });
-        infoWindow = new google.maps.InfoWindow;
-        //start infowindow
-        var contentString = '<div id="container">'+
-        '<h5>Vị trí hiện tại</h5>'+
-        '</div>';
-        infowindow = new google.maps.InfoWindow({
-          content: contentString, //chứa nội dung bên trong
-          maxwidth: 70,
-        });
-        marker.addListener('click', function(){
-          infowindow.open(curentPositionMap,marker);
-        });
-      }
-      function initMap(){
-        map = new google.maps.Map(mapDiv, {
-          zoom: 13,
-        });
-        // Try HTML5 geolocation.
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function(position) {
-            var pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            };
-            marker.setPosition(pos);
-            map.setCenter(pos);
-          }, function() {
-            handleLocationError(true, infoWindow, map.getCenter());
-          });
-        } else {
-          // Browser doesn't support Geolocation
-          handleLocationError(false, infoWindow, map.getCenter());
-        };
-        //icon marker
-        var icon = {
-          url: "{{URL::asset('public/img/icon/google_marker.png') }}", // url
-          scaledSize: new google.maps.Size(50, 50), // scaled size
-          origin: new google.maps.Point(0,0), // origin
-          anchor: new google.maps.Point(0, 0) // anchor
-        };
-        marker = new google.maps.Marker({
-          map: map,
-          icon: icon,
-          animation: google.maps.Animation.DROP,
-        });
+function Map(mapDiv,lat,lng){
+  var pos = {'lat': lat, 'lng': lng};
+  curentPositionMap = new google.maps.Map(mapDiv, {
+    center: pos,
+    zoom: 18,
+  });
+  var marker = new google.maps.Marker({
+    position: pos,
+    map: curentPositionMap,
+  });
+  infoWindow = new google.maps.InfoWindow;
+  //start infowindow
+  var contentString = '<div id="container">'+
+  '<h5>Vị trí hiện tại</h5>'+
+  '</div>';
+  infowindow = new google.maps.InfoWindow({
+    content: contentString, //chứa nội dung bên trong
+    maxwidth: 70,
+  });
+  marker.addListener('click', function(){
+    infowindow.open(curentPositionMap,marker);
+  });
+}
+function initMap(lat,lng){
+  var pos = {'lat': lat, 'lng': lng};
+  map = new google.maps.Map(mapDiv, {
+    center: pos,
+    zoom: 13,
+  });
+  //icon marker
+  var icon = {
+    url: "{{URL::asset('public/img/icon/google_marker.png') }}", // url
+    scaledSize: new google.maps.Size(50, 50), // scaled size
+    origin: new google.maps.Point(0,0), // origin
+    anchor: new google.maps.Point(0, 0) // anchor
+  };
+  marker = new google.maps.Marker({
+    position: pos,
+    map: map,
+    icon: icon,
+    animation: google.maps.Animation.DROP,
+  });
 
-        infoWindow = new google.maps.InfoWindow;
-        //start infowindow
-        var contentString = '<div id="container">'+
-        '<h5>Vị trí hiện tại</h5>'+
-        '</div>';
-        infowindow = new google.maps.InfoWindow({
-          content: contentString, //chứa nội dung bên trong
-          maxwidth: 70,
-        });
-        marker.addListener('mouseover', function(){
-          infowindow.open(map,marker);
-        });
-        marker.addListener('mouseout', function(){
-          infowindow.close();
-        });
+  infoWindow = new google.maps.InfoWindow;
+  //start infowindow
+  var contentString = '<div style="height: 200px; width: 160px;" class="direction"><center>'+
+  '<a href="https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_a_target" target="_blank" style="text-decoration: none;"><h4>'+resInfo.restaurant_name+'</h4></a>'+'<img style="width:150px;height:150px;" src="../avatar/{{Auth::user()->avatar}}">'+
+  '</center></div>';
+  infowindow = new google.maps.InfoWindow({
+    content: contentString, //chứa nội dung bên trong
+    maxwidth: 70,
+  });
+  marker.addListener('mouseover', function(){
+    infowindow.open(map,marker);
+  });
+  marker.addListener('mouseout', function(){
+    infowindow.close();
+  });
+//get position when click on map
+  var geocoder = new google.maps.Geocoder();
+  var clickPos;
+  google.maps.event.addListener(map, 'click', function(event) {
+    geocoder.geocode({
+      'latLng': event.latLng
+    }, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        if (results[0]) {
+          document.getElementById("pac-input").value = results[0].formatted_address;
+          document.getElementById("lat").value = event.latLng.lat();
+          document.getElementById("lng").value = event.latLng.lng();
+          marker.setMap(null);
+          clickPos = {'lat': event.latLng.lat(), 'lng': event.latLng.lng()};
+          marker = new google.maps.Marker({
+            position: clickPos,
+            map: map,
+          });
+          contentString = '<div id="container">'+
+          '<h5>'+results[0].formatted_address+'</h5>'+
+          '</div>';
+          infowindow = new google.maps.InfoWindow({
+            content: contentString, //chứa nội dung bên trong
+            maxwidth: 70,
+          });
+          marker.addListener('mouseover', function(){
+            infowindow.open(map,marker);
+          });
+          marker.addListener('mouseout', function(){
+            infowindow.close();
+          });
+        }
       }
+    });
+  });
+}
+function createMarker(lat, lng, map){
+  var pos = {'lat': lat, 'lng': lng};
+  var marker = new google.maps.Marker({
+    position: pos,
+    map: map,
+  });
+  infoWindow = new google.maps.InfoWindow;
+  //start infowindow
+  var contentString = '<div id="container">'+
+  '<h5>Vị trí hiện tại</h5>'+
+  '</div>';
+  infowindow = new google.maps.InfoWindow({
+    content: contentString, //chứa nội dung bên trong
+    maxwidth: 70,
+  });
+  // marker.addListener('click', function(){
+  //   infowindow.open(map,marker);
+  // });
+}
 function finder(){
   //place ID finder
 var input = document.getElementById('pac-input');
@@ -603,10 +606,10 @@ autocomplete.addListener('place_changed', function() {
 
   infowindowContent.children['place-address'].textContent = place.formatted_address;
   infowindow_search.open(map, marker_search);
-  var receiptAddress = document.getElementById('pac-input').value;//lay ten dia chi search
-  var receiptAddressLat = place.geometry.location.lat();
-  var  receiptAddressLng = place.geometry.location.lng();
-
+  var editAddressLat = place.geometry.location.lat();
+  var editAddressLng = place.geometry.location.lng();
+  document.getElementById("lat").value = editAddressLat;
+  document.getElementById("lng").value = editAddressLng;
 });
 }
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -617,48 +620,17 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.open(map);
 }
 var condition;
-var addNewLogo = function(input){
+
+var addNewLogo = function(input,id_img){
     if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function (e) {
             //Hiển thị ảnh vừa mới upload lên
-            $('#logo-img').attr('src', e.target.result);
+            $(id_img).attr('src', e.target.result);
         }
         reader.readAsDataURL(input.files[0]);     
     }
 }
-
-var addNewFoodAvatar = function(input){
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            //Hiển thị ảnh vừa mới upload lên
-            $('#food-avatar-edit').attr('src', e.target.result);
-        }
-        reader.readAsDataURL(input.files[0]);     
-    }
-}
-
-var addNewAvatar = function(input){
-      if (input.files && input.files[0]) {
-          var reader = new FileReader();
-          reader.onload = function (e) {
-              //Hiển thị ảnh vừa mới upload lên
-              $('#post-avatar').attr('src', e.target.result);
-          }
-          reader.readAsDataURL(input.files[0]);     
-      }
-  }
-var addNewAvatarEdit = function(input){
-      if (input.files && input.files[0]) {
-          var reader = new FileReader();
-          reader.onload = function (e) {
-              //Hiển thị ảnh vừa mới upload lên
-              $('#post-avatar-edit').attr('src', e.target.result);
-          }
-          reader.readAsDataURL(input.files[0]);     
-      }
-  }
 function edit_food(id_food){
 
   $.ajax({
@@ -873,17 +845,17 @@ function ChangeToSlugEdit()
     //In slug ra textbox có id “slug”
     document.getElementById('slug-edit').value = slug;
 }
-function CheckSlug(){
+function CheckSlug(slug, thongbao){
     var suggestSlug;
-    slug = document.getElementById("slug").value;
+    slug = document.getElementById(slug).value;
     for (i = 0; i < size; i++) { 
         if(slug == data[i]){
-            document.getElementById("thongbao").style.visibility = 'visible';
+            document.getElementById(thongbao).style.visibility = 'visible';
             $('#slug').addClass('input-error');
             condition = 1;
             break;
         }else{
-            document.getElementById("thongbao").style.visibility = 'hidden';
+            document.getElementById(thongbao).style.visibility = 'hidden';
             $('#slug').removeClass('input-error');
             condition = 0;
         }

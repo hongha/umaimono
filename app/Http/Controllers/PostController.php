@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Auth;
 use App\Post;
+use App\Food;
 use Image;
 use \Input as Input;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +13,10 @@ use App\Http\Requests\PostRequest;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Session;
 use App\User;
+use App\Order;
+use App\Receipt;
 use App\ShoppingCart;
+use App\RestaurantProfile;
 use Illuminate\Support\Collection;
 class PostController extends Controller
 {
@@ -63,7 +67,6 @@ class PostController extends Controller
         //     ['title' => $title, 'content' => $content, 'user_id' => $user_id, 'slug' => $slug]
         // );
         return redirect('/');
-    	
     }
     public function edit($id){
         $post = Post::find($id);
@@ -107,30 +110,34 @@ class PostController extends Controller
         if($id == null){
             return redirect()->back();
         }else{
+            $arr_foods[] = '';
             $post = Post::find($id);
             $user = User::find($post->user_id);
             $number_total = 0;
             $price_total = 0;
-               
+            $foods = Food::where('id_restaurant', $post->user_id)->where('delete_flg','!=',1)->orderBy('ordered','DESC')->get();
+            $posts = Post::where('user_id', $post->user_id)->where('delete_flg','!=',1)->orderBy('updated_at','DESC')->limit(10)->get();
+            $restaurant_info = DB::table('restaurant_profiles')->where('id_restaurant','=', $user->id)->get();
+            $str = explode(' ', $post->title);
+            for($i=0;$i<count($str);$i++){
+               $arr_foods[$i] = Food::where('name', 'LIKE', "%$str[$i]%")->where('delete_flg','!=',1)->orderBy('ordered','DESC')->get();
+            } 
             if($post->delete_flg == 1){
                 return view('errors.404');
             }else{
-                if (Auth::check()) {
+                if (Auth::check()) {                 
                     $shopping_carts = DB::table('shopping_carts')->select('id', 'food_name', 'price','number')->where('id_user','=', Auth::user()->id)->get();
                     foreach ($shopping_carts as $shopping_cart) {
                         $number_total = $number_total + $shopping_cart->number;
                         $price_total = $price_total + $shopping_cart->price*$shopping_cart->number;
-                        }
-                        return view('post.view', compact('post','user','shopping_carts','number_total','price_total'));
+                    }
+                        return view('post.view', compact('post','user','shopping_carts','number_total','price_total','restaurant_info','foods','posts','arr_foods'));
                     }else{
                         $shopping_carts = null;
-                        return view('post.view', compact('post','user','shopping_carts','number_total','price_total'));
+                        return view('post.view', compact('post','user','shopping_carts','number_total','price_total','restaurant_info','foods','posts','arr_foods'));
                 } 
             }
         }
-    }
-    public function buy($id = null){
-        return view('google.buy', compact('id'));
     }
     public function add_food($id_food = null){
         $shopping_cart = ShoppingCart::find($id_food);
@@ -156,9 +163,106 @@ class PostController extends Controller
           return  redirect('login'); 
         }
     }
-    public function them_hang($id_post){
-        
-        $shopping_carts = DB::table('shopping_carts')->select('id', 'food_name', 'price','number')->where('id_user','=', Auth::user()->id)->get();
-
+    public function them_hang($id_food){
+        $food = Food::find($id_food);
+        $shopping_carts = ShoppingCart::where('id_user', Auth::user()->id)->get();
+        $change_item = '';
+        $number_total = 0;
+        $price_total = 0;
+        foreach ($shopping_carts as $shopping_cart) {
+            if($shopping_cart->id_food == $id_food){
+                $shopping_cart->number = $shopping_cart->number + 1;
+                $shopping_cart->save();
+                $change_item = $shopping_cart;
+            }
+        }         
+        if($change_item == ''){
+            $shopping_cart = new ShoppingCart;
+            $shopping_cart->id_user = Auth::user()->id;
+            $shopping_cart->id_restaurant = $food->id_restaurant;
+            $shopping_cart->id_food = $id_food;
+            $shopping_cart->food_name = $food->name;
+            $shopping_cart->price = $food->price;
+            $shopping_cart->number = 1;
+            $shopping_cart->save();
+        } 
+        $shopping_carts = ShoppingCart::where('id_user', Auth::user()->id)->get();
+        foreach ($shopping_carts as $shopping_cart) {
+            $number_total = $number_total + $shopping_cart->number;
+            $price_total = $price_total + $shopping_cart->price*$shopping_cart->number;
+        }
+        return view('post.shoppingCart', compact('shopping_carts', 'number_total', 'price_total'));               
     }
+    public function view_food($id){
+       if($id == null){
+            return redirect()->back();
+        }else{
+            $arr_foods[] = '';
+            $food = Food::find($id);
+            $user = User::find($food->id_restaurant);
+            $number_total = 0;
+            $price_total = 0;
+            $foods = Food::where('id_restaurant', $food->id_restaurant)->where('delete_flg','!=',1)->orderBy('ordered','DESC')->get();
+            $posts = Post::where('user_id', $food->id_restaurant)->where('delete_flg','!=',1)->orderBy('updated_at','DESC')->limit(6)->get();
+            $restaurant_info = DB::table('restaurant_profiles')->where('id_restaurant','=', $user->id)->get();
+            $str = explode(' ', $food->name);
+            for($i=0;$i<count($str);$i++){
+               $arr_foods[$i] = Food::where('name', 'LIKE', "%$str[$i]%")->where('delete_flg','!=',1)->orderBy('ordered','DESC')->get();
+            } 
+            if($food->delete_flg == 1){
+                return view('errors.404');
+            }else{
+                if (Auth::check()) {                 
+                    $shopping_carts = DB::table('shopping_carts')->select('id', 'food_name', 'price','number')->where('id_user','=', Auth::user()->id)->get();
+                    foreach ($shopping_carts as $shopping_cart) {
+                        $number_total = $number_total + $shopping_cart->number;
+                        $price_total = $price_total + $shopping_cart->price*$shopping_cart->number;
+                    }
+                        return view('post.view_food', compact('food','user','shopping_carts','number_total','price_total','restaurant_info','foods','posts','arr_foods'));
+                    }else{
+                        $shopping_carts = null;
+                        return view('post.view_food', compact('food','user','shopping_carts','number_total','price_total','restaurant_info','foods','posts','arr_foods'));
+                } 
+            }
+        } 
+    }
+    public function buy(){
+        $i=0;$j=0;
+        $arr_res[] = '';
+        $number_total = 0;
+        $price_total = 0;
+        if (Auth::check()) { 
+            $food_types = DB::table('food_type_details')->get();
+            $foods = Food::where('delete_flg','!=',1)->orderBy('updated_at','desc')->limit(10)->get();
+            $posts = Post::where('delete_flg','!=',1)->orderBy('updated_at','desc')->limit(6)->get();
+            $shopping_carts = DB::table('shopping_carts')->where('id_user','=', Auth::user()->id)->get();
+            foreach ($shopping_carts as $shopping_cart) {
+                $number_total = $number_total + $shopping_cart->number;
+                $price_total = $price_total + $shopping_cart->price*$shopping_cart->number;
+                if($i == 0){
+                    array_push($arr_res,$shopping_cart->id_restaurant);
+                    $i++;
+                }
+                if(!in_array($shopping_cart->id_restaurant, $arr_res)){
+                    array_push($arr_res,$shopping_cart->id_restaurant);
+                    $i++;
+                }
+            }
+            array_shift($arr_res);
+            foreach ($arr_res as $res) {
+                $arr_res[$j] = RestaurantProfile::where('id_restaurant',$res)->get();
+                $j++;
+            }
+                return view('post.buy', compact('shopping_carts','number_total','price_total','foods','posts','food_types','arr_res'));
+            }else{
+                return view('login');
+        } 
+    }
+    public function order(Request $request){
+        $order = new Order;
+        $receipt = new Receipt;
+        $shopping_cart = ShoppingCart::where('id_user',Auth::user()->id)->get();
+        dd($shopping_cart);
+    }
+
 }

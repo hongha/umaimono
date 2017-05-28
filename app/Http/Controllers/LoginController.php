@@ -11,7 +11,7 @@ class LoginController extends Controller
     
     public function getLogin(){
     	if(Auth::check()){
-    		return redirect('userProfile');
+    		return redirect('/');
     	}
     	return view('login');
     }
@@ -33,6 +33,10 @@ class LoginController extends Controller
     		$email = $request->input('email');
     		$password = $request->input('password');
     		if(Auth::attempt(['email' => $email, 'password' => $password], $request->has('remember'))){
+                if(Auth::user()->delete_flg == 1){
+                   Auth::logout();
+                   return view('errors.error_login'); 
+                }
     			return redirect()->intended('/');
                 // return redirect()->back();
     		}else{

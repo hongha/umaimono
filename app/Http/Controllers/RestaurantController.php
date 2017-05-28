@@ -22,7 +22,7 @@ class RestaurantController extends Controller
     public function index(){
     	$restaurant_id = Auth::user()->id;
     	$slugs = DB::table('posts')->pluck('slug');
-    	$posts = Post::where('user_id', $restaurant_id)->where('delete_flg','!=',1)->paginate(10);
+    	$posts = Post::where('user_id', $restaurant_id)->where('delete_flg','0')->paginate(10);
     	$foods = Food::where('id_restaurant', $restaurant_id)->where('delete_flg','!=',1)->paginate(10);
     	$restaurant_info = RestaurantProfile::where('id_restaurant', $restaurant_id)->get();
     	// $restaurant_info = DB::table('restaurant_profiles')->where('id_restaurant','=', $restaurant_id)->get();
@@ -165,5 +165,17 @@ class RestaurantController extends Controller
         $post->delete_by = Auth::user()->id;
         $post->save();
         return response()->json($post);
+    }
+    public function update_res_profile($id = null,Request $request){
+    	$restaurant_info = RestaurantProfile::find($id);
+    	$restaurant_info->restaurant_name = $request->input('restaurant_name');
+    	$restaurant_info->address = $request->input('address');
+    	$restaurant_info->lat = $request->input('lat');
+    	$restaurant_info->lng = $request->input('lng');
+    	$restaurant_info->link_website = $request->input('link_website');
+    	$restaurant_info->phone_number = $request->input('phone_number');
+    	$restaurant_info->introduction = $request->input('introduction');
+    	$restaurant_info->save();
+    	return redirect()->back();
     }
 }

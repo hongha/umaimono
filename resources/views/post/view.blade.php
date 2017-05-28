@@ -1,67 +1,8 @@
-<!DOCTYPE html>
-<html>
-<title>User Profile</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
-<link rel="stylesheet" href="http://www.w3schools.com/lib/w3-theme-blue-grey.css">
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="{{ URL::asset('public/bootstrap/dist/css/bootstrap.min.css') }}" />
-<link rel="stylesheet" href="{{ URL::asset('public/css/style.css') }}" />
-<style>
-html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
-</style>
-<body class="w3-theme-l5">
-
-<!-- Navbar -->
-<div class="w3-top">
- <ul class="w3-navbar w3-theme-d2 w3-left-align w3-large">
-  <li class="w3-hide-medium w3-hide-large w3-opennav w3-right">
-    <a class="w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
-  </li>
-  <li><a href="#" class="w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Logo</a></li>
-  <li class="w3-hide-small"><a href="#" class="w3-padding-large w3-hover-white" title="News"><i class="fa fa-globe"></i></a></li>
-  <li class="w3-hide-small"><a href="#" class="w3-padding-large w3-hover-white" title="Account Settings"><i class="fa fa-user"></i></a></li>
-  <li class="w3-hide-small"><a href="#" class="w3-padding-large w3-hover-white" title="Messages"><i class="fa fa-envelope"></i></a></li>
-  <li class="w3-hide-small w3-dropdown-hover">
-    <a href="#" class="w3-padding-large w3-hover-white" title="Notifications"><i class="fa fa-bell"></i><span class="w3-badge w3-right w3-small w3-green">3</span></a>     
-    <div class="w3-dropdown-content w3-white w3-card-4">
-      <a href="#">One new friend request</a>
-      <a href="#">John Doe posted on your wall</a>
-      <a href="#">Jane likes your post</a>
-    </div>
-  </li>
-  <li class="w3-hide-small w3-right">
-  <?php 
-    if(isset(Auth::user()->name)){?>
-    <a href="{{url('logout')}}" class="w3-padding-large" title="My Account"><img src="{{ URL::asset('public/img/avatar.png') }}" class="w3-circle" style="height:25px;width:25px" alt="Avatar"><span style="color: white;">
-    <?php
-      echo Auth::user()->name;
-      echo '(Logout)';
-      ?>
-      </span>
-    </a>
-    <?php
-    }else{ ?>
-      <a href="{{url('login')}}">Login</a>&nbsp;<a href="{{url('register')}}">Register</a>
-    <?php
-    }
-  ?>
-  </li>
- </ul>
-</div>
-
-<!-- Navbar on small screens -->
-<div id="navDemo" class="w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:51px">
-  <ul class="w3-navbar w3-left-align w3-large w3-theme">
-    <li><a class="w3-padding-large" href="#" style="color: white;">Link 1</a></li>
-    <li><a class="w3-padding-large" href="#" style="color: white !important;">Link 2</a></li>
-    <li><a class="w3-padding-large" href="#" style="color: white !important;">Link 3</a></li>
-    <li><a class="w3-padding-large" href="#" style="color: white !important;">My Profile</a></li>
-  </ul>
-</div>
-
+@extends('layouts.postViewTemplate')
+@section('title')
+    {{$post->title}} - @parent
+@stop
+@section('content')
 <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
   <!-- The Grid -->
@@ -71,12 +12,20 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
       <!-- Profile -->
       <div class="w3-card-2 w3-round w3-white">
         <div class="w3-container">
-         <h4 class="w3-center">My Profile</h4>
-         <p class="w3-center"><img src="{{ URL::asset('public/img/avatar.png') }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
+         <h4 class="w3-center">Thông tin nhà hàng</h4>
+         <p class="w3-center"><img src="../../avatar/{{$user->avatar}}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
          <hr>
-         <p><i class="fa fa-pencil fa-fw w3-margin-right w3-text-theme"></i> Designer, UI</p>
-         <p><i class="fa fa-home fa-fw w3-margin-right w3-text-theme"></i> London, UK</p>
-         <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> April 1, 1988</p>
+         <?php 
+         if(isset($restaurant_info)){foreach ($restaurant_info as $restaurant_info){}}
+        ?>
+         <a><h4>{{{ isset($restaurant_info->restaurant_name) ? $restaurant_info->restaurant_name : 'Chưa cập nhật' }}}</h4></a>
+
+        <p><i class="fa fa-map-marker user-profile-icon"></i> {{{ isset($restaurant_info->address) ? $restaurant_info->address : 'Chưa cập nhật' }}}</p>
+
+        <p><i class="fa fa-briefcase user-profile-icon"></i> {{{ isset($restaurant_info->phone_number) ? $restaurant_info->phone_number : 'Chưa cập nhật' }}}</p>
+
+        <p><i class="fa fa-external-link user-profile-icon"></i>
+        <a href="{{{ isset($restaurant_info->link_website) ? $restaurant_info->link_website : '#' }}}" target="_blank">{{{ isset($restaurant_info->link_website) ? $restaurant_info->link_website : 'Chưa cập nhật' }}}</a></p>
         </div>
       </div>
       <br>
@@ -84,15 +33,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
       <!-- Accordion -->
       <div class="w3-card-2 w3-round">
         <div class="w3-accordion w3-white">
-          <button onclick="myFunction('Demo1')" class="w3-btn-block w3-theme-l1 w3-left-align"><i class="fa fa-circle-o-notch fa-fw w3-margin-right"></i> My Groups</button>
-          <div id="Demo1" class="w3-accordion-content w3-container">
-            <p>Some text..</p>
-          </div>
-          <button onclick="myFunction('Demo2')" class="w3-btn-block w3-theme-l1 w3-left-align"><i class="fa fa-calendar-check-o fa-fw w3-margin-right"></i> My Events</button>
-          <div id="Demo2" class="w3-accordion-content w3-container">
-            <p>Some other text..</p>
-          </div>
-          <button onclick="myFunction('Demo3')" class="w3-btn-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> My Photos</button>
+          <button onclick="myFunction('Demo3')" class="w3-btn-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> Ảnh các món ăn</button>
           <div id="Demo3" class="w3-accordion-content w3-container">
          <div class="w3-row-padding">
          <br>
@@ -119,37 +60,27 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
         </div>      
       </div>
       <br>
-      
-      <!-- Interests --> 
-      <div class="w3-card-2 w3-round w3-white w3-hide-small">
-        <div class="w3-container">
-          <p>Interests</p>
-          <p>
-            <span class="w3-tag w3-small w3-theme-d5">News</span>
-            <span class="w3-tag w3-small w3-theme-d4">W3Schools</span>
-            <span class="w3-tag w3-small w3-theme-d3">Labels</span>
-            <span class="w3-tag w3-small w3-theme-d2">Games</span>
-            <span class="w3-tag w3-small w3-theme-d1">Friends</span>
-            <span class="w3-tag w3-small w3-theme">Games</span>
-            <span class="w3-tag w3-small w3-theme-l1">Friends</span>
-            <span class="w3-tag w3-small w3-theme-l2">Food</span>
-            <span class="w3-tag w3-small w3-theme-l3">Design</span>
-            <span class="w3-tag w3-small w3-theme-l4">Art</span>
-            <span class="w3-tag w3-small w3-theme-l5">Photos</span>
-          </p>
+      <div class="w3-card-2 w3-round w3-white">
+      @if(isset($posts ))
+        <div class="w3-card-2 w3-round w3-white">
+        <div class="w3-container" style="padding-top: 15px;">
+        <h4>Các bài viết gần đây</h4>
+        <hr class="w3-clear">
+          @foreach($posts as $post_l)
+          <div>
+          <img src="../../post/avatar/{{$post_l->avatar}}" style="width: 100%; height: auto;">
+          </div>
+          <div style="margin-top: 10px;">
+          <a href="{{url('post/view/'.$post_l->id)}}" style="font-size: 14px;color: black;font-weight: 600;">
+          {{$post_l->title}}
+          </a>
+          </div>
+          <hr class="w3-clear">
+          @endforeach
         </div>
+        </div>
+      @endif
       </div>
-      <br>
-      
-      <!-- Alert Box -->
-      <div class="w3-container w3-round w3-theme-l4 w3-border w3-theme-border w3-margin-bottom w3-hide-small">
-        <span onclick="this.parentElement.style.display='none'" class="w3-hover-text-grey w3-closebtn">
-          <i class="fa fa-remove"></i>
-        </span>
-        <p><strong>Hey!</strong></p>
-        <p>People are looking at your profile. Find out who.</p>
-      </div>
-    
     <!-- End Left Column -->
     </div>
     
@@ -158,41 +89,56 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
       
       <div class="w3-container w3-card-2 w3-white w3-round margin-left-right-16"><br>
         <img src="../../avatar/{{$user->avatar}}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
-        <span class="w3-right w3-opacity">1 min</span>
+        <span class="w3-right w3-opacity">{{$post->created_at}}</span>
         <h4>{{$user->name}}</h4><br>
-        <div class="w3-row-padding" style="margin:0 -16px">
+        <h3>{{$post->title}}</h3>
+        <hr class="w3-clear">
+        <div class="w3-row-padding" style="margin:0 -16px; text-align: justify;">
           <div class="w3-half">
-            <img src="../../avatar/{{$post->avatar}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
+            <img src="../../post/avatar/{{$post->avatar}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
           </div>
           <?php echo $post->content; ?>
-        <button onclick="themHang({{$post->id}})">cho vao gio</button>
-        
-        
         </div>
         <button type="button" class="w3-btn w3-theme-d1 w3-margin-bottom"><i class="fa fa-thumbs-up"></i>  Like</button> 
         <button type="button" class="w3-btn w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</button> 
       </div>
       
-      <div class="w3-container w3-card-2 w3-white w3-round w3-margin"><br>
-        <img src="{{ URL::asset('public/img/avatar.png') }}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
-        <span class="w3-right w3-opacity">16 min</span>
-        <h4>Jane Doe</h4><br>
+      <div class="w3-container w3-card-2 w3-white w3-round w3-margin">
+        <h3>Các món ăn của nhà hàng</h3>
         <hr class="w3-clear">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        <button type="button" class="w3-btn w3-theme-d1 w3-margin-bottom"><i class="fa fa-thumbs-up"></i>  Like</button> 
-        <button type="button" class="w3-btn w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</button> 
-      </div>  
-
-      <div class="w3-container w3-card-2 w3-white w3-round w3-margin"><br>
-        <img src="{{ URL::asset('public/img/avatar.png') }}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
-        <span class="w3-right w3-opacity">32 min</span>
-        <h4>Angie Jane</h4><br>
-        <hr class="w3-clear">
-        <p>Have you seen this?</p>
-        <img src="{{ URL::asset('public/img/lights.jpg') }}" style="width:100%" class="w3-margin-bottom">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        <button type="button" class="w3-btn w3-theme-d1 w3-margin-bottom"><i class="fa fa-thumbs-up"></i>  Like</button> 
-        <button type="button" class="w3-btn w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</button> 
+        @if(isset($foods ))
+        @foreach ($foods as $food)
+        <div class="deli-box-menu-detail clearfix">
+        <div class="img-food-detail pull-left">
+        <img src="../../post/food_img/{{$food->avatar}}" width="60" height="60" onclick="">
+        </div>
+        <div class="deli-name-food-detail pull-left">
+        <a class="deli-title-name-food" href="{{url('post/view_food/'.$food->id)}}">
+        <h3 style="font-size: 16px; margin: 0px; padding: 0px; line-height: 1.3em; font-weight: bold;">
+        {{$food->name}}</h3>
+        </a>
+        <span class="deli-desc"></span>
+        <div class="deli-rating-food">
+        </div>
+        <p style="margin: 0; color: #a1a1a1; font-size: 11px;">
+        Đã được đặt <span style="color: #464646; font-weight: bold;">2</span> lần trong tháng</p>
+        <a style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span></a>
+        </div>
+        <div class="deli-more-info">
+        <div class="adding-food-cart">
+        <span class="btn-adding" onclick="themHang({{$food->id}});">+</span>
+        </div>
+        <div class="product-price">
+        <p class="current-price">
+        <span class="txt-blue font16 bold">
+        {{$food->price}}</span>
+        <span class="unit">đ</span>
+        </p>
+        </div>
+        </div>
+        </div>
+        @endforeach
+        @endif 
       </div> 
       
     <!-- End Middle Column -->
@@ -200,7 +146,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
     
     <!-- Right Column -->
     <div class="w3-col m3">
-      <div class="w3-card-2 w3-round w3-white w3-center" id="menu-column">
+      <div class="w3-card-2 w3-round w3-white w3-center margin-bottom-15" id="menu-column">
         <div class="w3-container padding-none text-align-left">
           <div class="row-bill font12">
             <a href="javascript:void(0)" class="cart-stats">
@@ -239,45 +185,50 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
           Đặt trước</a>
         </div>
       </div>
+
+      <div class="w3-card-2 w3-round w3-white w3-center padding-10">
+        <div class="text-align-left">
+        <h4>Các món ăn liên quan</h4>
+        <hr class="w3-clear">
+        @if(isset($arr_foods ))
+        @foreach ($arr_foods as $arr_food)
+        @foreach($arr_food as $food_l)
+        <div class="deli-box-menu-detail clearfix">
+        <div class="img-food-detail pull-left">
+        <img src="../../post/food_img/{{$food_l->avatar}}" width="60" height="60" onclick="">
+        </div>
+        <div class="pull-left" style="margin-left: 10px;line-height: 1.8em; overflow: overflow: hidden;">
+        <a class="deli-title-name-food" href="{{url('post/view_food/'.$food->id)}}" style="height: 20px;overflow: hidden;">
+        <span style="font-size: 14px; margin: 0px; padding: 0px; line-height: 1.3em; font-weight: bold;display: inline-block;">
+        {{$food_l->name}}
+        </span>
+        </a>
+        <p style="margin: 0; color: #a1a1a1; font-size: 11px;">
+        Đã đặt <span style="color: #464646; font-weight: bold;">2</span> lần trong tháng</p>
+        <a style="padding: 3px; color: #888;;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span></a>
+        </div>
+        <div class="deli-more-info">
+        <div class="adding-food-cart">
+        <span class="btn-adding" onclick="themHang({{$food->id}});">+</span>
+        </div>
+        <div class="product-price">
+        <p class="current-price">
+        <span class="txt-blue bold">
+        {{$food_l->price}}</span>
+        <span class="unit">đ</span>
+        </p>
+        </div>
+        </div>
+        </div>
+        @endforeach
+        @endforeach
+        @endif 
+        </div>
+      </div>
     </div>
     <!-- End Right Column -->   
   <!-- End Grid -->
   </div>
-  
-<!-- End Page Container -->
-</div>
-<br>
-
-<!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Modal Header</h4>
-      </div>
-      <div class="modal-body">
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- Footer -->
-<footer class="w3-container w3-theme-d3 w3-padding-16">
-  <h5>Footer</h5>
-</footer>
-
-<footer class="w3-container w3-theme-d5">
-  <p>Powered by <a href="http://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
-</footer>
- 
 <script>
 // Accordion
 function myFunction(id) {
@@ -325,6 +276,7 @@ function add_food(id_food){
         money_Temporarily.innerHTML = parseInt(money_total.innerHTML,10) + 'đ';
         spans[1].innerHTML = number_food + 1;
         spans[4].innerHTML = prices + price_one_food + 'đ';
+        alertify.success("Đã thêm hành công!");
     }
 });
 }
@@ -351,6 +303,7 @@ function minus_food(id_food){
         money_Temporarily.innerHTML = parseInt(money_total.innerHTML,10) + 'đ';
         spans[1].innerHTML = number_food - 1;
         spans[4].innerHTML = prices - price_one_food + 'đ';
+        alertify.success("Đã xóa hành công!");
         if(number_food <= 1){
           document.getElementById(id_food).remove();
         }
@@ -358,7 +311,9 @@ function minus_food(id_food){
 });
 }
 function reset_menu(){
-
+  var data =<?php echo json_encode($shopping_carts, JSON_FORCE_OBJECT) ?>;
+  if(!data){window.location.href = "http://localhost/umaimono/login";
+  }else{
   $.ajax({
     url: '/umaimono/post/reset_menu',
     type: 'POST',
@@ -371,39 +326,47 @@ function reset_menu(){
       var money_Temporarily = document.getElementById("money_Temporarily");
       var number_total = document.getElementById("number_total");
       number_total.innerHTML = 0 + '&nbsp;';
-      money_total.innerHTML = 0;
-      money_Temporarily.innerHTML = 0;
+      money_total.innerHTML = 0 + 'đ';
+      money_Temporarily.innerHTML = 0 + 'đ';
+      alertify.success("Đã reset hành công!");
     }
 });
-}
+}}
 function checkout(){
   var data =<?php echo json_encode($shopping_carts, JSON_FORCE_OBJECT) ?>;
-  console.log(data);
-  // var span = document.getElementById("number_total");
-  // var number_total = parseInt(span.innerHTML,10);
   if(!data){
     window.location.href = "http://localhost/umaimono/login";
   }else{
-    window.location.href = "http://localhost/umaimono/buy";
+    window.location.href = "http://localhost/umaimono/post/buy";
   }
   
 }
-function themHang(id_post){
+function themHang(id_food){
+  var data =<?php echo json_encode($shopping_carts, JSON_FORCE_OBJECT) ?>;
+  if(!data){window.location.href = "http://localhost/umaimono/login";
+  }else{
   $.ajax({
-    url: '/umaimono/post/them_hang'+id_post,
+    url: '/umaimono/post/them_hang/'+id_food,
     type: 'POST',
     data: {
         "_token": "{{ csrf_token() }}",
-        "id":id_post
+        "id":id_food
         },
-    success: function (data) {
+    success: function (response) {
+      var menuColumn = document.getElementById("menu-column");
+      $("#menu-column").empty();
+      $(response).appendTo( "#menu-column" );
+      alertify.success("Đã thêm hàng!");
+    },
+    error: function(data){
+
     }
   });
+  }
 }
 </script>
 <script src="{{ URL::asset('public/js/jquery.min.js') }}"></script>
 <script src="{{ URL::asset('public/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-<script src="{{ URL::asset('public/js/angular.min.js') }}"></script>
 </body>
 </html> 
-
+@stop

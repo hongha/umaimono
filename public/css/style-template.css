@@ -397,10 +397,10 @@ padding-top: 0;
 .top_quate_text {
     color: #fff;
     display: block;
-    height: 290px;
+    height: 310px;
     left: 11px;
     position: absolute;
-    top: 169px;
+    top: 100px;
     width: 100%;
     z-index: 999;
     font-size: 16px;

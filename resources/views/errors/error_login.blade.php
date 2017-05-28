@@ -1,0 +1,1 @@
+<p>Tài khoản của bạn đã bị khóa do vi phạm quá nhiều chính sách của trang web</p>

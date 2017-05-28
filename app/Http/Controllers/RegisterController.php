@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use Validator;
 use Auth;
 use App\User;
+use App\RestaurantProfile;
 use Image;
 use \Input as Input;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\MessageBag;
 class RegisterController extends Controller
 {
@@ -15,6 +17,7 @@ class RegisterController extends Controller
     	return view('register');
     }
     protected function store(Request $request){
+        
     	$rules = [
     		'name' => 'required|min:8|max:50',
     		'email' => 'required|email|max:255|unique:users,email',
@@ -69,6 +72,14 @@ class RegisterController extends Controller
                 'role' => $role,
                 ]);
                 Auth::attempt(['email' => $email, 'password' => $password]);
+                if($role == 3){
+                    $id_restaurant = DB::table('users')->orderBy('id', 'DESC')->take(1)->get();
+                    foreach ($id_restaurant as $id_restaurant) {
+                    }
+                    $res = new RestaurantProfile;
+                    $res->id_restaurant = $id_restaurant->id;
+                    $res->save();
+                }
                 return redirect()->intended('/');
                 
             }else{	

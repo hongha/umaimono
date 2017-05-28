@@ -1,9 +1,10 @@
 <?php
-Route::get('/','HomeController@getIndex');
+Route::get('/','HomeController@index');
 Route::get('logout', 'LoginController@getLogout');
+Route::get('homepage', 'HomeController@homepage');
 Route::get('userProfile', 'HomeController@userProfile');
 Route::get('restaurant', 'RestaurantController@index');
-Route::get('index', 'HomeController@getIndex');
+Route::get('index', 'HomeController@index');
 Route::group(['middleware' => 'viewer'], function () {
     Route::get('login', 'LoginController@getLogin');
 	Route::post('login', 'LoginController@postLogin');
@@ -13,18 +14,16 @@ Route::group(['middleware' => 'viewer'], function () {
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
-    Route::get('xxx', function ()    {
-    	echo "day la admin";
-    });
     Route::get('index', 'AdminController@index');
-
+    Route::post('index', 'AdminController@index');
+    Route::post('lock_post/{id}', 'AdminController@lock_post');
+    Route::post('unlock_post/{id}', 'AdminController@unlock_post');
+    Route::post('level_up/{id}', 'AdminController@level_up');
+    Route::post('delete_user/{id}', 'AdminController@delete_user');
+    Route::post('lock_food/{id}', 'AdminController@lock_food');
 });
 Route::group(['prefix' => 'user', 'middleware' => 'user'], function () {
-    Route::get('', function ()    {
-    	echo "day la user";
-    });
     Route::get('index', 'UserController@index');
-
 });
 Route::group(['prefix' => 'post'], function () {
     Route::get('index', 'PostController@index');
@@ -42,6 +41,12 @@ Route::group(['prefix' => 'post'], function () {
     Route::post('reset_menu', 'PostController@reset_menu');
     Route::get('them_hang/{id_post}', 'PostController@them_hang');
     Route::post('them_hang/{id_post}', 'PostController@them_hang');
+    Route::get('view_food/{id_food}', 'PostController@view_food');
+    Route::post('view_food/{id_food}', 'PostController@view_food');
+    Route::get('buy', 'PostController@buy');
+    Route::post('buy', 'PostController@buy');
+    Route::post('order', 'PostController@order');
+    Route::get('order', 'PostController@order');
 });
 Route::get('map', 'GoogleController@map');
 Route::get('google_map', 'GoogleController@google_map');
@@ -58,5 +63,6 @@ Route::group(['prefix' => 'restaurant', 'middleware' => 'restaurant'], function 
     Route::post('edit_food/{id}', 'RestaurantController@edit_food');
     Route::post('update_food/{id}', 'RestaurantController@update_food');
     Route::post('delete_food/{id}', 'RestaurantController@delete_food');
+    Route::post('update_res_profile/{id}', 'RestaurantController@update_res_profile');
 });
 
