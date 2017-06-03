@@ -24,7 +24,7 @@
   </div>
   <div class="row-bill-grey">
     <span class="float-left">Phí vận chuyển</span>
-    <span class="font14 float-right">7,000đ/km</span>
+    <span class="font14 float-right">5,000đ/km</span>
   </div>
   <div class="row-bill-grey">
     <span class="float-left font16 bold700">Tạm tính</span>

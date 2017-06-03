@@ -22,8 +22,43 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::post('delete_user/{id}', 'AdminController@delete_user');
     Route::post('lock_food/{id}', 'AdminController@lock_food');
 });
-Route::group(['prefix' => 'user', 'middleware' => 'user'], function () {
+Route::group(['prefix' => 'shipper', 'middleware' => 'shipper'], function () {
+    Route::get('index', 'ShipperController@index');
+    Route::post('index', 'ShipperController@index');
+    Route::get('update_profile/{id}', 'ShipperController@update_profile');
+    Route::post('update_profile/{id}', 'ShipperController@update_profile');
+    Route::get('view_receipt_detail/{id}', 'ShipperController@view_receipt_detail');
+    Route::post('view_receipt_detail/{id}', 'ShipperController@view_receipt_detail');
+});
+Route::group(['prefix' => 'shopper', 'middleware' => 'shopper'], function () {
     Route::get('index', 'UserController@index');
+    Route::post('index', 'UserController@index');
+    Route::get('view_receipt/{id}', 'UserController@view_receipt');
+    Route::post('view_receipt/{id}', 'UserController@view_receipt');
+    Route::get('edit_order', 'UserController@edit_order');
+    Route::post('edit_order', 'UserController@edit_order');
+    Route::get('edit_order_food', 'UserController@edit_order_food');
+    Route::post('edit_order_food', 'UserController@edit_order_food');
+    Route::get('save_food/{id}', 'UserController@save_food');
+    Route::post('save_food/{id}', 'UserController@save_food');
+    Route::get('dis_save_food/{id}', 'UserController@dis_save_food');
+    Route::post('dis_save_food/{id}', 'UserController@dis_save_food');
+    Route::get('save_post/{id}', 'UserController@save_post');
+    Route::post('save_post/{id}', 'UserController@save_post');
+    Route::get('dis_save_post/{id}', 'UserController@dis_save_post');
+    Route::post('dis_save_post/{id}', 'UserController@dis_save_post');
+    Route::get('like_food/{id}', 'UserController@like_food');
+    Route::post('like_food/{id}', 'UserController@like_food');
+    Route::get('dis_like_food/{id}', 'UserController@dis_like_food');
+    Route::post('dis_like_food/{id}', 'UserController@dis_like_food');
+    Route::get('like_post/{id}', 'UserController@like_post');
+    Route::post('like_post/{id}', 'UserController@like_post');
+    Route::get('dis_like_post/{id}', 'UserController@dis_like_post');
+    Route::post('dis_like_post/{id}', 'UserController@dis_like_post');
+    Route::get('feedback', 'UserController@feedback');
+    Route::post('feedback', 'UserController@feedback');
+    Route::get('saved', 'UserController@saved');
+    Route::post('saved', 'UserController@saved');
 });
 Route::group(['prefix' => 'post'], function () {
     Route::get('index', 'PostController@index');
@@ -37,16 +72,21 @@ Route::group(['prefix' => 'post'], function () {
     Route::post('add_food/{id_food}', 'PostController@add_food');
     Route::get('minus_food/{id_food}', 'PostController@minus_food');
     Route::post('minus_food/{id_food}', 'PostController@minus_food');
+    Route::get('minus_food_buy/{id_food}', 'PostController@minus_food_buy');
+    Route::post('minus_food_buy/{id_food}', 'PostController@minus_food_buy');
     Route::get('reset_menu', 'PostController@reset_menu');
     Route::post('reset_menu', 'PostController@reset_menu');
     Route::get('them_hang/{id_post}', 'PostController@them_hang');
     Route::post('them_hang/{id_post}', 'PostController@them_hang');
+    Route::get('them_hang_buy/{id_post}', 'PostController@them_hang_buy');
+    Route::post('them_hang_buy/{id_post}', 'PostController@them_hang_buy');
     Route::get('view_food/{id_food}', 'PostController@view_food');
     Route::post('view_food/{id_food}', 'PostController@view_food');
     Route::get('buy', 'PostController@buy');
     Route::post('buy', 'PostController@buy');
     Route::post('order', 'PostController@order');
     Route::get('order', 'PostController@order');
+    Route::post('add_ghi_chu/{id_food}', 'PostController@add_ghi_chu');
 });
 Route::get('map', 'GoogleController@map');
 Route::get('google_map', 'GoogleController@google_map');
@@ -64,5 +104,20 @@ Route::group(['prefix' => 'restaurant', 'middleware' => 'restaurant'], function 
     Route::post('update_food/{id}', 'RestaurantController@update_food');
     Route::post('delete_food/{id}', 'RestaurantController@delete_food');
     Route::post('update_res_profile/{id}', 'RestaurantController@update_res_profile');
+    Route::get('view_receipt/{id}', 'RestaurantController@view_receipt');
+    Route::post('view_receipt/{id}', 'RestaurantController@view_receipt');
+    Route::get('edit_profile', 'RestaurantController@edit_profile');
+    Route::post('edit_profile', 'RestaurantController@edit_profile');
+    Route::get('chose_shipper/{id_receipt}/{id_shipper}', 'RestaurantController@chose_shipper');
+    Route::post('chose_shipper/{id_receipt}/{id_shipper}', 'RestaurantController@chose_shipper');
+    Route::get('xac_nhan_receipt/{id_receipt}', 'RestaurantController@xac_nhan_receipt');
+    Route::post('xac_nhan_receipt/{id_receipt}', 'RestaurantController@xac_nhan_receipt');
+    Route::get('delete_receipt/{id_receipt}', 'RestaurantController@delete_receipt');
+    Route::post('delete_receipt/{id_receipt}', 'RestaurantController@delete_receipt');
+    Route::get('view_receipt_detail/{id}', 'RestaurantController@view_receipt_detail');
+    Route::post('view_receipt_detail/{id}', 'RestaurantController@view_receipt_detail');
+    Route::get('receipt_da_ship/{id}', 'RestaurantController@receipt_da_ship');
+    Route::post('receipt_da_ship/{id}', 'RestaurantController@receipt_da_ship');
+    
 });
 

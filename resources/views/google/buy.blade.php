@@ -201,7 +201,7 @@
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer;
         var directionDistance = new google.maps.DistanceMatrixService;
-        var infowindowDistance = new google.maps.InfoWindow();4
+        var infowindowDistance = new google.maps.InfoWindow();
         map = new google.maps.Map(mapDiv, {
           zoom: 13,
         });

@@ -1,4 +1,4 @@
-@extends('layouts.postViewTemplate')
+@extends('layouts.home')
 @section('title')
     {{$food->name}} - @parent
 @stop
@@ -111,8 +111,28 @@
           </div>
         </div>
         <br>
-        <button type="button" class="w3-btn w3-theme-d1 w3-margin-bottom"><i class="fa fa-thumbs-up"></i>  Like</button>&nbsp;<span style="">{{$food->likes}}</span>&nbsp;&nbsp; 
-        <button type="button" class="w3-btn w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</button>&nbsp;<span>{{$food->comments}}</span>  
+        <div>
+        <?php $j = 0; if(isset(Auth::user()->id)){foreach ($liked_foods as $liked_food) {
+            if($food->id == $liked_food){$j = 1;break;}}} ?>
+          <?php if($j == 1){?>
+          <a href="javascript:void(0)" class="danh-muc" style="margin-left: 15px;" onclick="updateLikeFood({{$food->id}},this)"><span>Bỏ thích</span><input type="text" name="" value="1" hidden=""></a>&nbsp;<span>{{$food->likes}}</span>
+          <?php }else{?>
+          <a href="javascript:void(0)" class="danh-muc" style="margin-left: 15px;" onclick="updateLikeFood({{$food->id}},this)"><span>Thích</span><input type="text" name="" value="0" hidden=""></a>&nbsp;<span>{{$food->likes}}</span>
+          <?php } ?>
+          <a href="{{url('post/view_food/'.$food->id)}}" style="margin-left: 15px;"><i class="fa fa-comments" aria-hidden="true"></i></a>&nbsp;<span>{{$food->comments}}</span>
+          <a href="javascript:void(0)" style="margin-left: 15px;"><i class="fa fa-bookmark"></i></a>&nbsp;<span>{{$food->saveds}}</span>
+          <?php $i = 0; if(isset(Auth::user()->id)){foreach ($saved_foods as $save_food) {
+            if($food->id == $save_food){$i = 1;break;}}} ?>
+          <?php if($i == 1){?>
+          <a href="javascript:void(0)" style="color: #FFF;background: #cf2127;padding: 2px 10px;margin: -3px 0;border-radius: 2px;float: right;margin-right: 15px;" class="hover-black" onclick="update({{$food->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Bỏ Lưu</span><input type="text" name="" value="1" hidden=""></a> 
+           <?php }else{?>
+          <a href="javascript:void(0)" style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;float: right;margin-right: 15px;" class="hover-black" onclick="update({{$food->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span><input type="text" name="" value="0" hidden=""></a>
+           <?php } ?>
+           &nbsp;
+           &nbsp;
+           <span>Được đặt <b>{{$food->ordered}}</b> lần</span>
+        </div>
+           <br> 
       </div>
       
       <div class="w3-container w3-card-2 w3-white w3-round w3-margin">
@@ -134,7 +154,14 @@
         </div>
         <p style="margin: 0; color: #a1a1a1; font-size: 11px;">
         Đã được đặt <span style="color: #464646; font-weight: bold;">2</span> lần trong tháng</p>
-        <a style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span></a>
+        <!-- <a style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span></a> -->
+        <?php $i = 0; if(isset(Auth::user()->id)){foreach ($saved_foods as $save_food) {
+            if($food->id == $save_food){$i = 1;break;}}} ?>
+          <?php if($i == 1){?>
+          <a href="javascript:void(0)" style="color: #FFF;background: #cf2127;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="updateFood({{$food->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Bỏ Lưu</span><input type="text" name="" value="1" hidden=""></a> 
+           <?php }else{?>
+          <a href="javascript:void(0)" style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="updateFood({{$food->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span><input type="text" name="" value="0" hidden=""></a>
+        <?php } ?>
         </div>
         <div class="deli-more-info">
         <div class="adding-food-cart">
@@ -174,7 +201,7 @@
               <span class="fa fa-minus-square" onclick="minus_food({{$shopping_cart->id}})"></span>
               <span class="bold700 font13">{{$shopping_cart->food_name}}</span>
               <div class="clearfix" style="margin-top: 2px;">
-                <input type="text" width="200" placeholder="Ghi chú" class="pull-left" max="255" maxlength="255">
+                <input type="text" width="200" placeholder="Ghi chú" class="pull-left" max="255" maxlength="255" value="{{$shopping_cart->ghi_chu}}" onblur="blurFunction({{$shopping_cart->id}},this)">
                 <span class="bold700 font12" style="float: right;">{{$shopping_cart->price*$shopping_cart->number}}đ</span>
               </div>
             </div>
@@ -186,7 +213,7 @@
           </div>
           <div class="row-bill-grey">
             <span class="float-left">Phí vận chuyển</span>
-            <span class="font14 float-right">7,000đ/km</span>
+            <span class="font14 float-right">5,000đ/km</span>
           </div>
           <div class="row-bill-grey">
             <span class="float-left font16 bold700">Tạm tính</span>
@@ -202,26 +229,32 @@
         <div class="text-align-left">
         <h4>Các món ăn liên quan</h4>
         <hr class="w3-clear">
-        @if(isset($arr_foods ))
-        @foreach ($arr_foods as $arr_food)
-        @foreach($arr_food as $food_l)
+        @if(isset($luu_nhieus ))
+        @foreach($luu_nhieus as $food_l)
         <div class="deli-box-menu-detail clearfix">
         <div class="img-food-detail pull-left">
         <img src="../../post/food_img/{{$food_l->avatar}}" width="60" height="60" onclick="">
         </div>
         <div class="pull-left" style="margin-left: 10px;line-height: 1.8em; overflow: overflow: hidden;">
-        <a class="deli-title-name-food" href="{{url('post/view_food/'.$food->id)}}" style="height: 20px;overflow: hidden;">
+        <a class="deli-title-name-food" href="{{url('post/view_food/'.$food_l->id)}}" style="height: 20px;overflow: hidden;">
         <span style="font-size: 14px; margin: 0px; padding: 0px; line-height: 1.3em; font-weight: bold;display: inline-block;">
         {{$food_l->name}}
         </span>
         </a>
         <p style="margin: 0; color: #a1a1a1; font-size: 11px;">
         Đã đặt <span style="color: #464646; font-weight: bold;">2</span> lần trong tháng</p>
-        <a style="padding: 3px; color: #888;;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span></a>
+        <!-- <a style="padding: 3px; color: #888;;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span></a> -->
+        <?php $i = 0; if(isset(Auth::user()->id)){foreach ($saved_foods as $save_food) {
+            if($food_l->id == $save_food){$i = 1;break;}}} ?>
+          <?php if($i == 1){?>
+          <a href="javascript:void(0)" style="color: #FFF;background: #cf2127;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="updateFood({{$food_l->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Bỏ Lưu</span><input type="text" name="" value="1" hidden=""></a> 
+           <?php }else{?>
+          <a href="javascript:void(0)" style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="updateFood({{$food_l->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span><input type="text" name="" value="0" hidden=""></a>
+        <?php } ?>
         </div>
         <div class="deli-more-info">
         <div class="adding-food-cart">
-        <span class="btn-adding" onclick="themHang({{$food->id}});">+</span>
+        <span class="btn-adding" onclick="themHang({{$food_l->id}});">+</span>
         </div>
         <div class="product-price">
         <p class="current-price">
@@ -233,6 +266,50 @@
         </div>
         </div>
         @endforeach
+        @endif 
+        </div>
+      </div>
+
+      <div class="w3-card-2 w3-round w3-white w3-center padding-10" style="margin-top: 20px;">
+        <div class="text-align-left">
+        <h4>Các món được thích nhiều</h4>
+        <hr class="w3-clear">
+        @if(isset($like_nhieus))
+        @foreach ($like_nhieus as $food_l)
+        <div class="deli-box-menu-detail clearfix">
+        <div class="img-food-detail pull-left">
+        <img src="../../post/food_img/{{$food_l->avatar}}" width="60" height="60" onclick="">
+        </div>
+        <div class="pull-left" style="margin-left: 10px;line-height: 1.8em; overflow: overflow: hidden;">
+        <a class="deli-title-name-food" href="{{url('post/view_food/'.$food_l->id)}}" style="height: 20px;overflow: hidden;">
+        <span style="font-size: 14px; margin: 0px; padding: 0px; line-height: 1.3em; font-weight: bold;display: inline-block;">
+        {{$food_l->name}}
+        </span>
+        </a>
+        <p style="margin: 0; color: #a1a1a1; font-size: 11px;">
+        Đã đặt <span style="color: #464646; font-weight: bold;">2</span> lần trong tháng</p>
+        <!-- <a style="padding: 3px; color: #888;;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span></a> -->
+        <?php $i = 0; if(isset(Auth::user()->id)){foreach ($saved_foods as $save_food) {
+            if($food_l->id == $save_food){$i = 1;break;}}} ?>
+          <?php if($i == 1){?>
+          <a href="javascript:void(0)" style="color: #FFF;background: #cf2127;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="update({{$food_l->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Bỏ Lưu</span><input type="text" name="" value="1" hidden=""></a> 
+           <?php }else{?>
+          <a href="javascript:void(0)" style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="update({{$food_l->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span><input type="text" name="" value="0" hidden=""></a>
+        <?php } ?>
+        </div>
+        <div class="deli-more-info">
+        <div class="adding-food-cart">
+        <span class="btn-adding" onclick="themHang({{$food_l->id}});">+</span>
+        </div>
+        <div class="product-price">
+        <p class="current-price">
+        <span class="txt-blue bold">
+        {{$food_l->price}}</span>
+        <span class="unit">đ</span>
+        </p>
+        </div>
+        </div>
+        </div>
         @endforeach
         @endif 
         </div>
@@ -241,7 +318,211 @@
     <!-- End Right Column -->   
   <!-- End Grid -->
   </div>
+  <?php if(isset(Auth::user()->id)){$user_id = Auth::user()->id;}else{$user_id = 0;} ?>
 <script>
+function updateFood(id_food,a_tag){
+  var a = a_tag.getElementsByTagName("input")[0];
+  var data =<?php echo json_encode($user_id, JSON_FORCE_OBJECT) ?>;
+  if(!data){window.location.href = "http://localhost/umaimono/login";
+  }else{
+    if(a.value == 1){
+      $.ajax({
+        url: '/umaimono/shopper/dis_save_food/'+id_food,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          a_tag.style.backgroundColor = "#ddd";
+          a_tag.style.color = "#888";
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Lưu";
+          a.value = 0;
+        }
+      });
+    }else{
+      $.ajax({
+        url: '/umaimono/shopper/save_food/'+id_food,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          a_tag.style.backgroundColor = "#cf2127";
+          a_tag.style.color = "#FFF";
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Bỏ Lưu";
+          a.value = 1;
+        }
+      });
+    }
+}}
+
+function updateLikePost(id_post,a_tag){
+  var a = a_tag.getElementsByTagName("input")[0];
+  var data =<?php echo json_encode($user_id, JSON_FORCE_OBJECT) ?>;
+  if(!data){window.location.href = "http://localhost/umaimono/login";
+  }else{
+    if(a.value == 1){
+      $.ajax({
+        url: '/umaimono/shopper/dis_like_post/'+id_post,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var likeds = parseInt(spans[1].innerHTML,10);
+          spans[1].innerHTML = likeds - 1;
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Thích";
+          a.value = 0;
+        }
+      });
+    }else{
+      $.ajax({
+        url: '/umaimono/shopper/like_post/'+id_post,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var likeds = parseInt(spans[1].innerHTML,10);
+          spans[1].innerHTML = likeds + 1;
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Bỏ thích";
+          a.value = 1;
+        }
+      });
+    }
+}}
+
+function updateLikeFood(id_food,a_tag){
+  var a = a_tag.getElementsByTagName("input")[0];
+  var data =<?php echo json_encode($user_id, JSON_FORCE_OBJECT) ?>;
+  if(!data){window.location.href = "http://localhost/umaimono/login";
+  }else{
+    if(a.value == 1){
+      $.ajax({
+        url: '/umaimono/shopper/dis_like_food/'+id_food,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var likeds = parseInt(spans[1].innerHTML,10);
+          spans[1].innerHTML = likeds - 1;
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Thích";
+          a.value = 0;
+        }
+      });
+    }else{
+      $.ajax({
+        url: '/umaimono/shopper/like_food/'+id_food,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var likeds = parseInt(spans[1].innerHTML,10);
+          spans[1].innerHTML = likeds + 1;
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Bỏ thích";
+          a.value = 1;
+        }
+      });
+    }
+}}
+
+function update(id_food,a_tag){
+  var a = a_tag.getElementsByTagName("input")[0];
+  var data =<?php echo json_encode($user_id, JSON_FORCE_OBJECT) ?>;
+  if(!data){window.location.href = "http://localhost/umaimono/login";
+  }else{
+    if(a.value == 1){
+      $.ajax({
+        url: '/umaimono/shopper/dis_save_food/'+id_food,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var saveds = parseInt(spans[3].innerHTML,10);
+          spans[3].innerHTML = saveds - 1;
+          a_tag.style.backgroundColor = "#ddd";
+          a_tag.style.color = "#888";
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Lưu";
+          a.value = 0;
+        }
+      });
+    }else{
+      $.ajax({
+        url: '/umaimono/shopper/save_food/'+id_food,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var saveds = parseInt(spans[3].innerHTML,10);
+          spans[3].innerHTML = saveds + 1;
+          a_tag.style.backgroundColor = "#cf2127";
+          a_tag.style.color = "#FFF";
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Bỏ Lưu";
+          a.value = 1;
+        }
+      });
+    }
+}}
+
+function updatePost(id_post,a_tag){
+  var a = a_tag.getElementsByTagName("input")[0];
+  var data =<?php echo json_encode($user_id, JSON_FORCE_OBJECT) ?>;
+  if(!data){window.location.href = "http://localhost/umaimono/login";
+  }else{
+    if(a.value == 1){
+      $.ajax({
+        url: '/umaimono/shopper/dis_save_post/'+id_post,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var saveds = parseInt(spans[3].innerHTML,10);
+          spans[3].innerHTML = saveds - 1;
+          a_tag.style.backgroundColor = "#ddd";
+          a_tag.style.color = "#888";
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Lưu";
+          a.value = 0;
+        }
+      });
+    }else{
+      $.ajax({
+        url: '/umaimono/shopper/save_post/'+id_post,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var saveds = parseInt(spans[3].innerHTML,10);
+          spans[3].innerHTML = saveds + 1;
+          a_tag.style.backgroundColor = "#cf2127";
+          a_tag.style.color = "#FFF";
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Bỏ Lưu";
+          a.value = 1;
+        }
+      });
+    }
+}}
 // Accordion
 function myFunction(id) {
     var x = document.getElementById(id);
@@ -257,14 +538,31 @@ function myFunction(id) {
 
 // Used to toggle the menu on smaller screens when clicking on the menu button
 function openNav() {
-    var x = document.getElementById("navDemo");
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-    } else { 
-        x.className = x.className.replace(" w3-show", "");
-    }
+  var x = document.getElementById("navDemo");
+  if (x.className.indexOf("w3-show") == -1) {
+      x.className += " w3-show";
+  } else { 
+      x.className = x.className.replace(" w3-show", "");
+  }
 }
-
+function blurFunction(id_food,input){
+  if(!$(input).val()){
+    console.log(input);
+  }else{
+    $.ajax({
+    url: '/umaimono/post/add_ghi_chu/'+id_food,
+    type: 'POST',
+    data: {
+        "_token": "{{ csrf_token() }}",
+        "id": id_food,
+        "ghi_chu": $(input).val(),
+        },
+    success: function (response) {
+        alertify.success("Đã thêm ghi chú!");
+      }
+    });
+  }
+}
 function add_food(id_food){
 
   $.ajax({
@@ -349,7 +647,13 @@ function checkout(){
   if(!data){
     window.location.href = "http://localhost/umaimono/login";
   }else{
-    window.location.href = "http://localhost/umaimono/post/buy";
+    var money_total = document.getElementById("money_total");
+    console.log(parseInt(money_total.innerHTML,10));
+    if(parseInt(money_total.innerHTML,10) < 50000){
+      alertify.alert("Rất xin lỗi! Bạn cần mua nhiều hơn hoặc bằng 50,000đ!");
+    }else{
+      window.location.href = "http://localhost/umaimono/post/buy";
+    }
   }
   
 }

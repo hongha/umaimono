@@ -6,7 +6,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gentellela Alela! | </title>
+    <title>
+    @section('title')
+      Restaurant | Umaimono
+    @show
+</title>
   <link href="{{ URL::asset('public/bootstrap-daterangepicker/daterangepicker.css') }}" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ URL::asset('public/bootstrap/dist/css/bootstrap.min.css') }}" />
@@ -18,6 +22,10 @@
     <link rel="stylesheet" href="{{ URL::asset('public/css/notification/alertify.core.css') }}" />
     <link rel="stylesheet" href="{{ URL::asset('public/css/notification/alertify.default.css') }}" />
     <script type="text/javascript" src="{{ URL::asset('public/js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('public/js/validator.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('public/js/fastclick.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('public/js/nprogress.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('public/js/custom.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('public/js/alertify.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('public/bootstrap/dist/js/bootstrap.min.js') }}"></script>
   </head>
@@ -28,7 +36,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentellela Alela!</span></a>
+              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Umaimono!</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -36,11 +44,11 @@
             <!-- menu profile quick info -->
             <div class="profile clearfix">
               <div class="profile_pic">
-                <img src="{{ URL::asset('public/img/avatar.jpg') }}" alt="..." class="img-circle profile_img">
+                <img src="../../umaimono/avatar/{{Auth::user()->avatar}}" alt="..." class="img-circle profile_img">
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
-                <h2>John Doe</h2>
+                <h2>{{Auth::user()->name}}</h2>
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -181,7 +189,7 @@
               <ul class="nav navbar-nav navbar-right">
                 <li class="">
                   <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="{{ URL::asset('public/img/avatar.jpg') }}" alt="">John Doe
+                    <img src="../../umaimono/avatar/{{Auth::user()->avatar}}" alt="">{{Auth::user()->name}}
                     <span class=" fa fa-angle-down"></span>
                   </a>
                   <ul class="dropdown-menu dropdown-usermenu pull-right">
@@ -193,7 +201,7 @@
                       </a>
                     </li>
                     <li><a href="javascript:;">Help</a></li>
-                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                    <li><a href="{{url('logout')}}"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                   </ul>
                 </li>
 

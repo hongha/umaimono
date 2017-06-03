@@ -15,6 +15,7 @@
   height: 100%;
 }
 </style>
+<?php use Illuminate\Support\Facades\DB; ?>
 <script type="text/javascript" language="javascript" src="{{ URL::asset('ckeditor/ckeditor.js') }}" ></script>
 <script type="text/javascript" language="javascript" src="{{ URL::asset('ckfinder/ckfinder.js') }}" ></script>
 <div class="right_col" role="main">
@@ -42,27 +43,158 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
           <div class="x_title">
-            <h2>User Report <small>Activity report</small></h2>
+            <h2>Báo cáo <small>Hoạt động</small></h2>
             <div class="clearfix"></div>
           </div>
           <div class="x_content">
-            
             <div class="col-md-12 col-sm-12 col-xs-12">
-
-
-
               <div class="" role="tabpanel" data-example-id="togglable-tabs">
                 <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                  <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Recent Activity</a>
+                  <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Đơn hàng mới</a>
                   </li>
-                  <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Projects Worked on</a>
+                  <li role="presentation" class=""><a href="#tab_contentx1" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Đơn đã xác nhận</a>
+                  </li>
+                  <li role="presentation" class=""><a href="#tab_contentx2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Đơn hàng đang ship</a>
+                  </li>
+                  <li role="presentation" class=""><a href="#tab_contentx3" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Đơn hàng đã ship</a>
+                  </li>
+                  <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Bài đăng và món ăn</a>
                   </li>
                   <li role="presentation" class=""><a href="#tab_content3" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">Profile</a>
                   </li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                   <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
-
+                    <h3>Các đơn hàng mới</h3>
+                    <table class="data table table-striped no-margin">
+                      <thead>
+                        <tr class="w3-light-grey w3-hover-red" style="line-height: 27px;">
+                          <th>SDT</th>
+                          <th>Người nhận</th>
+                          <th>Tiền ship</th>
+                          <th>Ghi chú</th>
+                          <th>Địa chỉ nhận</th>
+                          <th>Thời gian nhận</th>
+                          <th>Tổng tiền</th>
+                          <th>Thao tác</th>
+                        </tr>
+                      </thead>
+                      @foreach($receipt_mois as $index => $receipt)
+                      <tr class="w3-hover-green" style="line-height: 27px;">
+                        <td>{{$receipt->phone_number}}</td>
+                        <td>{{$receipt->nguoi_nhan}}</td>
+                        <td>{{$receipt->toltal_ship}}đ</td>
+                        <td>{{$receipt->ghi_chu}}</td>
+                        <td>{{$receipt->receive_address}}</td>
+                        <td>{{$receipt->receive_hour}} {{$receipt->receive_day}}</td>
+                        <td>{{$receipt->toltal_money}}đ</td>
+                        <td>
+                          <a href="{{url('restaurant/xac_nhan_receipt/'.$receipt->id)}}" class="btn btn-success" style="font-size: 10px;"><i class="fa fa-edit m-right-xs" ></i>Xác nhận</a>
+                          <a href="{{url('restaurant/delete_receipt/'.$receipt->id)}})" class="glyphicon glyphicon-trash btn btn-danger" style="font-size: 10px;"></a>  
+                        </td>
+                      </tr>
+                      @endforeach
+                    </table>
+                  </div>
+                  <div role="tabpanel" class="tab-pane fade" id="tab_contentx1" aria-labelledby="profile-tab">
+                   <h3>Các đơn hàng đã xác nhận</h3>
+                    <table class="data table table-striped no-margin">
+                      <thead>
+                        <tr class="w3-light-grey w3-hover-red" style="line-height: 27px;">
+                          <th>SDT</th>
+                          <th>Người nhận</th>
+                          <th>Tiền ship</th>
+                          <th>Ghi chú</th>
+                          <th>Địa chỉ nhận</th>
+                          <th>Thời gian nhận</th>
+                          <th>Tổng tiền</th>
+                          <th>Thao tác</th>
+                        </tr>
+                      </thead>
+                      @foreach($receipt_xacs as $index => $receipt)
+                      <tr class="w3-hover-green" style="line-height: 27px;">
+                        <td>{{$receipt->phone_number}}</td>
+                        <td>{{$receipt->nguoi_nhan}}</td>
+                        <td>{{$receipt->toltal_ship}}đ</td>
+                        <td>{{$receipt->ghi_chu}}</td>
+                        <td>{{$receipt->receive_address}}</td>
+                        <td>{{$receipt->receive_hour}} {{$receipt->receive_day}}</td>
+                        <td>{{$receipt->toltal_money}}đ</td>
+                        <td>
+                          <a href="{{url('restaurant/view_receipt/'.$receipt->id)}}" class="btn btn-success" style="font-size: 10px;"><i class="fa fa-edit m-right-xs" ></i>Chọn người ship</a>
+                         
+                        </td>
+                      </tr>
+                      @endforeach
+                    </table>
+                  </div>
+                  <div role="tabpanel" class="tab-pane fade" id="tab_contentx2" aria-labelledby="profile-tab">
+                   <h3>Các đơn hàng đang ship</h3>
+                    <table class="data table table-striped no-margin">
+                      <thead>
+                        <tr class="w3-light-grey w3-hover-red" style="line-height: 27px;">
+                          <th>SDT</th>
+                          <th>Người nhận</th>
+                          <th>Tiền ship</th>
+                          <th>Ghi chú</th>
+                          <th>Địa chỉ nhận</th>
+                          <th>Thời gian nhận</th>
+                          <th>Tổng tiền</th>
+                          <th>Người ship</th>
+                          <th>Thao tác</th>
+                        </tr>
+                      </thead>
+                      @foreach($receipt_ships as $index => $receipt)
+                      <tr class="w3-hover-green" style="line-height: 27px;">
+                        <td>{{$receipt->phone_number}}</td>
+                        <td>{{$receipt->nguoi_nhan}}</td>
+                        <td>{{$receipt->toltal_ship}}đ</td>
+                        <td>{{$receipt->ghi_chu}}</td>
+                        <td>{{$receipt->receive_address}}</td>
+                        <td>{{$receipt->receive_hour}} {{$receipt->receive_day}}</td>
+                        <td>{{$receipt->toltal_money}}đ</td>
+                        <td><?php $shipper = DB::table('shippers')->where('id',$receipt->id_shipper)->get(); foreach ($shipper as $shipper) {} echo $shipper->name; ?></td>
+                        <td>
+                          <a href="{{url('restaurant/view_receipt_detail/'.$receipt->id)}}" class="glyphicon glyphicon-eye-open btn btn-info" style="font-size: 10px;"></a>
+                          <a href="{{url('restaurant/receipt_da_ship/'.$receipt->id)}}" class="btn btn-success" style="font-size: 10px;"><i class="fa fa-edit m-right-xs" ></i>Đã ship</a>
+                        </td>
+                      </tr>
+                      @endforeach
+                    </table>
+                  </div>
+                  <div role="tabpanel" class="tab-pane fade" id="tab_contentx3" aria-labelledby="profile-tab">
+                   <h3>Các đơn hàng đã ship</h3>
+                    <table class="data table table-striped no-margin">
+                      <thead>
+                        <tr class="w3-light-grey w3-hover-red" style="line-height: 27px;">
+                          <th>SDT</th>
+                          <th>Người nhận</th>
+                          <th>Tiền ship</th>
+                          <th>Ghi chú</th>
+                          <th>Địa chỉ nhận</th>
+                          <th>Thời gian nhận</th>
+                          <th>Tổng tiền</th>
+                          <th>Thao tác</th>
+                        </tr>
+                      </thead>
+                      @foreach($receipt_toans as $index => $receipt)
+                      <tr class="w3-hover-green" style="line-height: 27px;">
+                        <td>{{$receipt->phone_number}}</td>
+                        <td>{{$receipt->nguoi_nhan}}</td>
+                        <td>{{$receipt->toltal_ship}}đ</td>
+                        <td>{{$receipt->ghi_chu}}</td>
+                        <td>{{$receipt->receive_address}}</td>
+                        <td>{{$receipt->receive_hour}} {{$receipt->receive_day}}</td>
+                        <td>{{$receipt->toltal_money}}đ</td>
+                        <td>
+                          <a href="{{url('restaurant/view_receipt_detail/'.$receipt->id)}}" class="glyphicon glyphicon-eye-open btn btn-success" style="font-size: 10px;"></a>
+      
+                        </td>
+                      </tr>
+                      @endforeach
+                    </table>
+                  </div>
+                  <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
                     <!-- start foods-->
                     <h2>Các món ăn</h2>
                       <table class="data table table-striped no-margin" style="margin-bottom: 0px !important;">
@@ -130,14 +262,6 @@
                     {!! $posts->render() !!}
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal-posts" style="float: right;margin-top: 20px;">Thêm bài đăng</button>
                     <!-- end posts-->
-                    
-                  </div>
-                  <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
-
-                    <!-- start user projects -->
-
-                    <!-- end user projects -->
-
                   </div>
                   <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab" data-toggle="tab">
                     <?php 
@@ -385,7 +509,7 @@
         <div class="row">
             <div class="col-md-3 col-xs-12 col-sm-12">
               <img id="change-avatar-img" onclick="document.getElementById('change-avatar').click();" style="width: 100px; height: 100px; border-radius: 5px; border:solid 2px #A3B5F7;" src="../avatar/{{Auth::user()->avatar}}"/>
-              <input style="" type="file" enctype="multipart/form-data"  id="change-avatar" name="change-avatar" accept="image/*" onchange="addNewLogo(this,'#change-avatar-img')"/>
+              <input style="display: none;" type="file" enctype="multipart/form-data"  id="change-avatar" name="change-avatar" accept="image/*" onchange="addNewLogo(this,'#change-avatar-img')"/>
             </div>
             <div class="col-md-9 col-xs-12 col-sm-12">
               <input type="text" class="style-input form-control margin-bottom-15" placeholder="Địa chỉ website" name="link_website" value="{{{ isset($restaurant_info->link_website) ? $restaurant_info->link_website : '' }}}">

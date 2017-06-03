@@ -15,19 +15,69 @@ use Illuminate\Support\Facades\Session;
 use App\User;
 use App\ShoppingCart;
 use App\Food;
+use App\Order;
+use App\Receipt;
 use App\FoodTypeDetail;
 use App\RestaurantProfile;
 class RestaurantController extends Controller
 {
     public function index(){
     	$restaurant_id = Auth::user()->id;
+        $restaurant_info = RestaurantProfile::where('id_restaurant', $restaurant_id)->get();
+        foreach ($restaurant_info as $restaurant_i) {
+        }
+        if($restaurant_i->restaurant_name == '' | $restaurant_i->address == '' | $restaurant_i->lat == '' | $restaurant_i->lng == '' | $restaurant_i->phone_number == ''){
+            return view('restaurant/edit_profile',compact('restaurant_i'));
+        }else{
     	$slugs = DB::table('posts')->pluck('slug');
     	$posts = Post::where('user_id', $restaurant_id)->where('delete_flg','0')->paginate(10);
     	$foods = Food::where('id_restaurant', $restaurant_id)->where('delete_flg','!=',1)->paginate(10);
-    	$restaurant_info = RestaurantProfile::where('id_restaurant', $restaurant_id)->get();
+        $receipt_xacs = Receipt::where('id_restaurant',Auth::user()->id)->where('shipping',0)->where('thanh_toan',0)->where('xac_nhan',1)->where('delete_flg','!=',1)->get();
+        $receipt_mois = Receipt::where('id_restaurant',Auth::user()->id)->where('thanh_toan',0)->where('xac_nhan',0)->where('delete_flg','!=',1)->where('shipping',0)->get();
+        $receipt_toans = Receipt::where('id_restaurant',Auth::user()->id)->where('thanh_toan',1)->where('delete_flg','!=',1)->where('shipping',2)->where('xac_nhan',1)->get();
+        $receipt_ships = Receipt::where('id_restaurant',Auth::user()->id)->where('thanh_toan',0)->where('xac_nhan',1)->where('delete_flg','!=',1)->where('shipping',1)->get();
     	// $restaurant_info = DB::table('restaurant_profiles')->where('id_restaurant','=', $restaurant_id)->get();
     	$food_types = FoodTypeDetail::all();
-    	return view('restaurant/index', compact('posts','foods','slugs','food_types','restaurant_info'));
+    	return view('restaurant/index', compact('posts','foods','slugs','food_types','restaurant_info','receipt_mois','receipt_toans','receipt_xacs','receipt_ships'));
+        }
+    }
+    public function view_receipt($id_receipt = null){
+        $restaurant = RestaurantProfile::where('id_restaurant',Auth::user()->id)->get();
+        foreach ($restaurant as $restaurant) {}
+        $orders = Order::where('id_receipt',$id_receipt)->get();
+        $receipt = Receipt::find($id_receipt);
+        $shippers = DB::table('shippers')->where('delete_flg','!=',1)->get();
+        return view('restaurant/view_receipt', compact('orders','receipt','shippers','restaurant'));
+    }
+    public function view_receipt_detail($id_receipt = null){
+        $restaurant = RestaurantProfile::where('id_restaurant',Auth::user()->id)->get();
+        foreach ($restaurant as $restaurant) {}
+        $orders = Order::where('id_receipt',$id_receipt)->get();
+        $receipt = Receipt::find($id_receipt);
+        $shipper = DB::table('shippers')->where('id',$receipt->id_shipper)->get();
+        foreach ($shipper as $shipper) {
+        }
+        return view('restaurant/view_receipt_detail', compact('orders','receipt','shipper','restaurant'));
+    }
+    public function xac_nhan_receipt($id_receipt = null){
+        $receipt = Receipt::find($id_receipt);
+        $receipt->xac_nhan = 1;
+        $receipt->save();
+        return redirect('restaurant/index');
+    }
+    public function receipt_da_ship($id_receipt = null){
+        $receipt = Receipt::find($id_receipt);
+        $receipt->shipping = 2;
+        $receipt->thanh_toan = 1;
+        $receipt->save();
+        return redirect('restaurant/index');
+    }
+    public function chose_shipper($id_receipt = null, $id_shipper = null){
+        $receipt = Receipt::find($id_receipt);
+        $receipt->id_shipper = $id_shipper;
+        $receipt->shipping = 1;
+        $receipt->save();
+        return redirect('restaurant/index');
     }
     public function add_food(Request $request)
     {

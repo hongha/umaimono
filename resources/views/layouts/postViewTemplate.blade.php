@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="{{ URL::asset('public/css/notification/alertify.default.css') }}" />
 <link rel="stylesheet" href="{{ URL::asset('public/css/footer-distributed-with-address-and-phones.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('public/css/jquery-ui.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('public/css/style.css') }}">
 <script src="{{ URL::asset('public/js/jquery-ui.js') }}"></script>
 <style>
 html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}

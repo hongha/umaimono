@@ -11,7 +11,7 @@ class LoginController extends Controller
     
     public function getLogin(){
     	if(Auth::check()){
-    		return redirect('/');
+    		return redirect()->intended('/');
     	}
     	return view('login');
     }
@@ -47,7 +47,7 @@ class LoginController extends Controller
     }
     public function getLogout(){
         Auth::logout();
-            return redirect()->back();
+            return redirect('/');
         
     }
 }

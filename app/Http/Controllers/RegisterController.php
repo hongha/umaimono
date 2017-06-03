@@ -80,6 +80,14 @@ class RegisterController extends Controller
                     $res->id_restaurant = $id_restaurant->id;
                     $res->save();
                 }
+                if($role == 1){
+                    $id_shippers = DB::table('users')->orderBy('id', 'DESC')->take(1)->get();
+                    foreach ($id_shippers as $id_shipper) {
+                    }
+                    $shipper = DB::table('shippers')->insert(
+                        ['id_user' => $id_shipper->id]
+                    );
+                }
                 return redirect()->intended('/');
                 
             }else{	

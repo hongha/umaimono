@@ -3,9 +3,11 @@
     Trang chủ - @parent
 @stop
 @section('content')
-<?php use App\RestaurantProfile; ?>
+<?php use App\RestaurantProfile; 
+use Illuminate\Support\Facades\DB;
+?>
 <!-- Page Container -->
-<div class="w3-container w3-content" style="max-width:1400px;margin-top:100px">    
+<div class="w3-container w3-content" style="max-width:1400px;margin-top:10px">    
   <!-- The Grid -->
   <div class="w3-row">
     <!-- Left Column -->
@@ -80,10 +82,23 @@
           <p style="margin-left: 15px; color: #a1a1a1; font-size: 14px;"><?php $restaurants = RestaurantProfile::where('id_restaurant',$food->id_restaurant)->get(); foreach ($restaurants as $restaurant) {
              echo $restaurant->address;
           } ?></p>
-          <a href="javascript:void(0)" class="danh-muc" style="margin-left: 15px;">Like</a>&nbsp;<span>{{$food->likes}}</span>
-          <a href="javascript:void(0)" style="margin-left: 15px;"><i class="fa fa-comments" aria-hidden="true"></i></a>&nbsp;<span>{{$food->comments}}</span>
-          <a href="#" style="margin-left: 15px;"><i class="fa fa-bookmark"></i></a>&nbsp;<span>40</span>
-          <a style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;float: right;margin-right: 15px;" class="hover-black"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span></a>
+          <?php $j = 0; if(isset(Auth::user()->id)){foreach ($liked_foods as $liked_food) {
+            if($food->id == $liked_food){$j = 1;break;}}} ?>
+          <?php if($j == 1){?>
+          <a href="javascript:void(0)" class="danh-muc" style="margin-left: 15px;" onclick="updateLikeFood({{$food->id}},this)"><span>Bỏ thích</span><input type="text" name="" value="1" hidden=""></a>&nbsp;<span>{{$food->likes}}</span>
+          <?php }else{?>
+          <a href="javascript:void(0)" class="danh-muc" style="margin-left: 15px;" onclick="updateLikeFood({{$food->id}},this)"><span>Thích</span><input type="text" name="" value="0" hidden=""></a>&nbsp;<span>{{$food->likes}}</span>
+          <?php } ?>
+          <a href="{{url('post/view_food/'.$food->id)}}" style="margin-left: 15px;"><i class="fa fa-comments" aria-hidden="true"></i></a>&nbsp;<span>{{$food->comments}}</span>
+          <a href="javascript:void(0)" style="margin-left: 15px;"><i class="fa fa-bookmark"></i></a>&nbsp;<span>{{$food->saveds}}</span>
+          <?php $i = 0; if(isset(Auth::user()->id)){foreach ($saved_foods as $save_food) {
+            if($food->id == $save_food){$i = 1;break;}}} ?>
+          <?php if($i == 1){?>
+           <a href="javascript:void(0)" style="color: #FFF;background: #cf2127;padding: 2px 10px;margin: -3px 0;border-radius: 2px;float: right;margin-right: 15px;" class="hover-black" onclick="update({{$food->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Bỏ Lưu</span><input type="text" name="" value="1" hidden=""></a> 
+           <?php }else{?>
+            <a href="javascript:void(0)" style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;float: right;margin-right: 15px;" class="hover-black" onclick="update({{$food->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span><input type="text" name="" value="0" hidden=""></a>
+           <?php } ?>
+          
           </div>
         </div>
       </div>
@@ -92,7 +107,6 @@
     <div style="background: #d02128; margin-right: 15px; height: 40px; line-height: 40px;"><h3 style="line-height: 40px; margin-left: 15px; color: white;">Bài viết mới nhất</h3>
     </div>
     </div>
-
     @foreach($posts as $post)
       <div class="w3-col m4" style="margin-top: 15px; height: 310px; margin-bottom: 15px;">
         <div class="margin-right-15 " style="padding-bottom: 15px; border-radius: 2px">
@@ -105,29 +119,201 @@
           <p style="margin-left: 15px; color: #a1a1a1; font-size: 14px;"><?php $restaurants = RestaurantProfile::where('id_restaurant',$post->user_id)->get(); foreach ($restaurants as $restaurant) {
              echo $restaurant->address;
           } ?></p>
-          
-          <a href="#" style="margin-left: 15px;"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a>&nbsp;<span>300</span>
-          <a href="#" style="margin-left: 15px;"><i class="fa fa-comments" aria-hidden="true"></i></a>&nbsp;<span>200</span>
-          <a href="#" style="margin-left: 15px;"><i class="fa fa-bookmark"></i></a>&nbsp;<span>40</span>
-          <a style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;float: right;margin-right: 15px;" class="hover-black"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span></a>
+          <?php $j = 0; if(isset(Auth::user()->id)){foreach ($liked_posts as $liked_post) {
+            if($post->id == $liked_post){$j = 1;break;}}} ?>
+          <?php if($j == 1){?>
+          <a href="javascript:void(0)" class="danh-muc" style="margin-left: 15px;" onclick="updateLikePost({{$post->id}},this)"><span>Bỏ thích</span><input type="text" name="" value="1" hidden=""></a>&nbsp;<span>{{$post->likes}}</span>
+          <?php }else{?>
+          <a href="javascript:void(0)" class="danh-muc" style="margin-left: 15px;" onclick="updateLikePost({{$post->id}},this)"><span>Thích</span><input type="text" name="" value="0" hidden=""></a>&nbsp;<span>{{$post->likes}}</span>
+          <?php } ?>
+          <a href="{{url('post/view/'.$post->id)}}" style="margin-left: 15px;"><i class="fa fa-comments" aria-hidden="true"></i></a>&nbsp;<span>{{$post->comments}}</span>
+          <a href="javascript:void(0)" style="margin-left: 15px;"><i class="fa fa-bookmark"></i></a>&nbsp;<span>{{$post->saveds}}</span>
+          <?php $i = 0; if(isset(Auth::user()->id)){foreach ($saved_posts as $saved_post) {
+            if($post->id == $saved_post){$i = 1;break;}}} ?>
+          <?php if($i == 1){?>
+           <a href="javascript:void(0)" style="color: #FFF;background: #cf2127;padding: 2px 10px;margin: -3px 0;border-radius: 2px;float: right;margin-right: 15px;" class="hover-black" onclick="updatePost({{$post->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Bỏ Lưu</span><input type="text" name="" value="1" hidden=""></a> 
+           <?php }else{?>
+            <a href="javascript:void(0)" style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;float: right;margin-right: 15px;" class="hover-black" onclick="updatePost({{$post->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span><input type="text" name="" value="0" hidden=""></a>
+           <?php } ?>
           </div>
         </div>
       </div>
     @endforeach
-
     </div>
-    
-    <!-- End Middle Column -->
     </div>
-    
-
-    <!-- End Right Column -->   
-  <!-- End Grid -->
   </div>
   </div>
+  <?php if(isset(Auth::user()->id)){$user_id = Auth::user()->id;}else{$user_id = 0;} ?>
+<script>
+function updateLikePost(id_post,a_tag){
+  var a = a_tag.getElementsByTagName("input")[0];
+  var data =<?php echo json_encode($user_id, JSON_FORCE_OBJECT) ?>;
+  if(!data){window.location.href = "http://localhost/umaimono/login";
+  }else{
+    if(a.value == 1){
+      $.ajax({
+        url: '/umaimono/shopper/dis_like_post/'+id_post,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var likeds = parseInt(spans[1].innerHTML,10);
+          spans[1].innerHTML = likeds - 1;
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Thích";
+          a.value = 0;
+        }
+      });
+    }else{
+      $.ajax({
+        url: '/umaimono/shopper/like_post/'+id_post,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var likeds = parseInt(spans[1].innerHTML,10);
+          spans[1].innerHTML = likeds + 1;
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Bỏ thích";
+          a.value = 1;
+        }
+      });
+    }
+}}
+
+function updateLikeFood(id_food,a_tag){
+  var a = a_tag.getElementsByTagName("input")[0];
+  var data =<?php echo json_encode($user_id, JSON_FORCE_OBJECT) ?>;
+  if(!data){window.location.href = "http://localhost/umaimono/login";
+  }else{
+    if(a.value == 1){
+      $.ajax({
+        url: '/umaimono/shopper/dis_like_food/'+id_food,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var likeds = parseInt(spans[1].innerHTML,10);
+          spans[1].innerHTML = likeds - 1;
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Thích";
+          a.value = 0;
+        }
+      });
+    }else{
+      $.ajax({
+        url: '/umaimono/shopper/like_food/'+id_food,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var likeds = parseInt(spans[1].innerHTML,10);
+          spans[1].innerHTML = likeds + 1;
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Bỏ thích";
+          a.value = 1;
+        }
+      });
+    }
+}}
+
+function update(id_food,a_tag){
+  var a = a_tag.getElementsByTagName("input")[0];
+  var data =<?php echo json_encode($user_id, JSON_FORCE_OBJECT) ?>;
+  if(!data){window.location.href = "http://localhost/umaimono/login";
+  }else{
+    if(a.value == 1){
+      $.ajax({
+        url: '/umaimono/shopper/dis_save_food/'+id_food,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var saveds = parseInt(spans[3].innerHTML,10);
+          spans[3].innerHTML = saveds - 1;
+          a_tag.style.backgroundColor = "#ddd";
+          a_tag.style.color = "#888";
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Lưu";
+          a.value = 0;
+        }
+      });
+    }else{
+      $.ajax({
+        url: '/umaimono/shopper/save_food/'+id_food,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var saveds = parseInt(spans[3].innerHTML,10);
+          spans[3].innerHTML = saveds + 1;
+          a_tag.style.backgroundColor = "#cf2127";
+          a_tag.style.color = "#FFF";
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Bỏ Lưu";
+          a.value = 1;
+        }
+      });
+    }
+}}
+
+function updatePost(id_post,a_tag){
+  var a = a_tag.getElementsByTagName("input")[0];
+  var data =<?php echo json_encode($user_id, JSON_FORCE_OBJECT) ?>;
+  if(!data){window.location.href = "http://localhost/umaimono/login";
+  }else{
+    if(a.value == 1){
+      $.ajax({
+        url: '/umaimono/shopper/dis_save_post/'+id_post,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var saveds = parseInt(spans[3].innerHTML,10);
+          spans[3].innerHTML = saveds - 1;
+          a_tag.style.backgroundColor = "#ddd";
+          a_tag.style.color = "#888";
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Lưu";
+          a.value = 0;
+        }
+      });
+    }else{
+      $.ajax({
+        url: '/umaimono/shopper/save_post/'+id_post,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var a_par = a_tag.parentNode;
+          var spans = a_par.getElementsByTagName("span");
+          var saveds = parseInt(spans[3].innerHTML,10);
+          spans[3].innerHTML = saveds + 1;
+          a_tag.style.backgroundColor = "#cf2127";
+          a_tag.style.color = "#FFF";
+          a_tag.getElementsByTagName("span")[0].innerHTML = "Bỏ Lưu";
+          a.value = 1;
+        }
+      });
+    }
+}}
 </script>
 <script src="{{ URL::asset('public/js/jquery.min.js') }}"></script>
 <script src="{{ URL::asset('public/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-</body>
-</html> 
+
 @stop
