@@ -12,8 +12,13 @@
   width: 150px;
   margin: 40px auto;
 }
+#map{
+  height: 500px;
+  width: 100%;
+  border: 2px solid gray;
+}
 </style>
-  <div class="w3-row-padding" style="margin-bottom: 100px;">
+  <div class="w3-row-padding">
   <h3>Các các món đã đặt</h3>
   <table class="w3-table-all">
     <thead>
@@ -70,40 +75,132 @@
       
     </tr>
   </table>
+  <h3>Người ship</h3>
+    <table class="data table table-striped no-margin">
+      <thead>
+        <tr class="w3-light-grey w3-hover-red" style="line-height: 27px;">
+          <th>Tên người ship</th>
+          <th>Email</th>
+          <th>Địa chỉ</th>
+          <th>Số điện thoại</th>
+          <th>Giờ làm việc</th>
+        </tr>
+      </thead>
+      <tr class="w3-hover-green" style="line-height: 27px;" id="{{$index}}">
+        <td>{{$shipper->name}}</td>
+        <td>{{$shipper->email}}</td>
+        <td>{{$shipper->address}}</td>
+        <td>{{$shipper->phone_number}}</td>
+        <td id="{{$order->id}}">{{$shipper->gio_giao_hang}}</td>
+      </tr>
+    </table>
   </div>
+
+  <div id="map"></div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMOaA3Yy3TAZgJwoyjuO7YiVbVa5Ye0Hc&callback=initMap&libraries=places"
+    async defer>
+</script>
+<script>
+var map;
+var marker;
+var mapDiv = document.getElementById('map');
+var directionsService,directionsDisplay,directionDistance,infowindowDistance;
+var restaurant =<?php echo json_encode($restaurant, JSON_FORCE_OBJECT) ?>;
+var receiptAdd =<?php echo json_encode($receipt, JSON_FORCE_OBJECT) ?>;
+function initMap(){
+  directionsService = new google.maps.DirectionsService;
+  directionsDisplay = new google.maps.DirectionsRenderer;
+  directionDistance = new google.maps.DistanceMatrixService;
+  infowindowDistance = new google.maps.InfoWindow();
+  var pos = {'lat': restaurant.lat, 'lng': restaurant.lng};
+  map = new google.maps.Map(mapDiv, {
+    center: pos,
+    zoom: 14,
+  });
+  marker = new google.maps.Marker({
+    position: pos,
+    map: map,
+    animation: google.maps.Animation.DROP,
+  });
+  marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+  var contentString = '<div id="container">'+
+  '<h5>'+restaurant.restaurant_name+'</h5>'+'<h5>'+restaurant.address+'</h5>'+'<a href="'+restaurant.link_website+'" target="_blank"><h5>'+restaurant.link_website+'</h5></a>'+'<h5>'+restaurant.phone_number+'</h5>'+
+  '</div>';
+  var infowindow = new google.maps.InfoWindow({
+    content: contentString, //chứa nội dung bên trong
+    maxwidth: 70,
+  });
+  marker.addListener('mouseover', function(){
+    infowindow.open(map,marker);
+  });
+  marker.addListener('mouseout', function(){
+    infowindow.close();
+  });
   
-  <!-- Contact Section -->
-  <div class="w3-container w3-padding-large w3-grey">
-    <h4 id="contact"><b>Contact Me</b></h4>
-    <div class="w3-row-padding w3-center w3-padding-24" style="margin:0 -16px">
-      <div class="w3-third w3-dark-grey">
-        <p><i class="fa fa-envelope w3-xxlarge w3-text-light-grey"></i></p>
-        <p>email@email.com</p>
-      </div>
-      <div class="w3-third w3-teal">
-        <p><i class="fa fa-map-marker w3-xxlarge w3-text-light-grey"></i></p>
-        <p>Chicago, US</p>
-      </div>
-      <div class="w3-third w3-dark-grey">
-        <p><i class="fa fa-phone w3-xxlarge w3-text-light-grey"></i></p>
-        <p>512312311</p>
-      </div>
-    </div>
-    <hr class="w3-opacity">
-    <form action="/action_page.php" target="_blank">
-      <div class="w3-section">
-        <label>Name</label>
-        <input class="w3-input w3-border" type="text" name="Name" required>
-      </div>
-      <div class="w3-section">
-        <label>Email</label>
-        <input class="w3-input w3-border" type="text" name="Email" required>
-      </div>
-      <div class="w3-section">
-        <label>Message</label>
-        <input class="w3-input w3-border" type="text" name="Message" required>
-      </div>
-      <button type="submit" class="w3-button w3-black w3-margin-bottom"><i class="fa fa-paper-plane w3-margin-right"></i>Send Message</button>
-    </form>
-  </div>
+  createMarker(parseFloat(receiptAdd.receive_address_lat),parseFloat(receiptAdd.receive_address_lng),receiptAdd.receive_address,map,directionsService,directionsDisplay,directionDistance,infowindowDistance);
+}
+function createMarker(lat,lng,address,map,directionsService,directionsDisplay,directionDistance,infowindowDistance){
+  var pos = {'lat': lat, 'lng': lng};
+
+  var newMarker = new google.maps.Marker({
+    position: pos,
+    map: map,
+  });
+  var content = '<div id="container">'+
+  '<h5>'+address+'</h5>'+'</div>';
+  var info = new google.maps.InfoWindow({
+    content: content, //chứa nội dung bên trong
+    maxwidth: 70,
+  });
+  newMarker.addListener('mouseover', function(){
+    info.open(map,newMarker);
+  });
+  newMarker.addListener('mouseout', function(){
+    info.close();
+  });
+  calculateAndDisplayRoute(directionsService, directionsDisplay, newMarker, directionDistance, infowindowDistance);
+}
+function calculateAndDisplayRoute(directionsService, directionsDisplay, newMarker, directionDistance, infowindowDistance) {
+var middle;
+directionsDisplay.setMap(map);
+directionsDisplay.setOptions({suppressMarkers: true});
+directionsService.route({
+  origin: marker.getPosition(), //vi tri 1
+  destination: newMarker.getPosition(), // vi tri 2
+  travelMode: 'DRIVING'
+}, function(response, status) {
+  if (status === 'OK') {
+    directionsDisplay.setDirections(response);
+    var m = Math.ceil((response.routes[0].overview_path.length)/2);
+    middle = response.routes[0].overview_path[m];
+    //sau khi chi duong xong thi se tinh toan quang duong va thoi gian
+     directionDistance.getDistanceMatrix({
+      origins: [marker.getPosition()],
+      destinations: [newMarker.getPosition()],
+      travelMode: 'DRIVING',
+    }, function(response, status) {
+      if(status === google.maps.DistanceMatrixStatus.OK){
+        var originList = response.originAddresses;
+        var destinationList = response.destinationAddresses;
+        for (var i = 0; i < originList.length; i++) {
+          var results = response.rows[i].elements;
+          for (var j = 0; j < results.length; j++) {
+            var element = results[j];
+            var dt = element.distance.text;//thoi gian
+            var dr = element.duration.text;//khoang cach
+          };
+        };
+        
+      };
+      var contentDistance = '<div>'+dt+'<br>'+dr+'</div';
+      infowindowDistance.setContent(contentDistance);
+      infowindowDistance.setPosition(middle);
+      infowindowDistance.open(map);
+      }); 
+  } else {
+    window.alert('Directions request failed due to ' + status);
+  }
+});
+}
+</script>
 @stop

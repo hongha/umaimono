@@ -72,7 +72,7 @@
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="telephone">Khung giờ giao hàng <span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="tel" id="" name="gio_giao_hang" required="required" data-validate-length-range="8,20" placeholder="Ví dụ: Từ 9h AM đến 6h PM" class="form-control col-md-7 col-xs-12" value="{{$shipper_info->phone_number}}">
+                  <input type="tel" id="" name="gio_giao_hang" required="required" data-validate-length-range="8,20" placeholder="Ví dụ: Từ 9h AM đến 6h PM" class="form-control col-md-7 col-xs-12" value="{{$shipper_info->gio_giao_hang}}">
                 </div>
               </div>
               <div class="item form-group">

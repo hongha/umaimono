@@ -46,7 +46,7 @@ class RestaurantController extends Controller
         foreach ($restaurant as $restaurant) {}
         $orders = Order::where('id_receipt',$id_receipt)->get();
         $receipt = Receipt::find($id_receipt);
-        $shippers = DB::table('shippers')->where('delete_flg','!=',1)->get();
+        $shippers = DB::table('shippers')->where('delete_flg','!=',1)->where('dang_nghi','!=',1)->get();
         return view('restaurant/view_receipt', compact('orders','receipt','shippers','restaurant'));
     }
     public function view_receipt_detail($id_receipt = null){
@@ -227,5 +227,16 @@ class RestaurantController extends Controller
     	$restaurant_info->introduction = $request->input('introduction');
     	$restaurant_info->save();
     	return redirect()->back();
+    }
+    public function delete_receipt($id_receipt = null){
+        $receipt = Receipt::find($id_receipt);
+        $receipt->delete_flg = 1 ;
+        $receipt->save();
+        $orders = Order::where('id_receipt',$receipt->id)->get();
+        foreach ($orders as $order) {
+            $order->delete_flg = 1;
+            $order->save();
+        }
+        return response()->json($receipt);
     }
 }

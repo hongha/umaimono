@@ -1,4 +1,4 @@
-@extends('layouts.adminTemplate')
+@extends('layouts.restaurant')
 @section('content')
 <style type="text/css">
   html, body {
@@ -7,7 +7,7 @@
   padding: 0;
 }
 #map {
-  height: 100%;
+  height: 500px;
   width: 100%;
 }
 #curent-position{
@@ -20,7 +20,7 @@
   <div class="">
     <div class="page-title">
       <div class="title_left">
-        <a href="{{url('restaurant/index')}}"><h3>Restaurant Manage</h3></a>
+        <a href="{{url('shipper/index')}}"><h3>Shipper Manage</h3></a>        
       </div>
       <div class="title_right">
         <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
@@ -104,10 +104,115 @@
             </table>   
           </div>
         </div>
+         <div id="map"></div>
       </div>
     </div>
   </div>
+
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMOaA3Yy3TAZgJwoyjuO7YiVbVa5Ye0Hc&callback=initMap&libraries=places"
     async defer>
+</script>
+<script>
+var map;
+var marker;
+var mapDiv = document.getElementById('map');
+var directionsService,directionsDisplay,directionDistance,infowindowDistance;
+var restaurant =<?php echo json_encode($restaurant, JSON_FORCE_OBJECT) ?>;
+var receiptAdd =<?php echo json_encode($receipt, JSON_FORCE_OBJECT) ?>;
+function initMap(){
+  directionsService = new google.maps.DirectionsService;
+  directionsDisplay = new google.maps.DirectionsRenderer;
+  directionDistance = new google.maps.DistanceMatrixService;
+  infowindowDistance = new google.maps.InfoWindow();
+  var pos = {'lat': restaurant.lat, 'lng': restaurant.lng};
+  map = new google.maps.Map(mapDiv, {
+    center: pos,
+    zoom: 14,
+  });
+  marker = new google.maps.Marker({
+    position: pos,
+    map: map,
+    animation: google.maps.Animation.DROP,
+  });
+  marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+  var contentString = '<div id="container">'+
+  '<h5>'+restaurant.restaurant_name+'</h5>'+'<h5>'+restaurant.address+'</h5>'+'<a href="'+restaurant.link_website+'" target="_blank"><h5>'+restaurant.link_website+'</h5></a>'+'<h5>'+restaurant.phone_number+'</h5>'+
+  '</div>';
+  var infowindow = new google.maps.InfoWindow({
+    content: contentString, //chứa nội dung bên trong
+    maxwidth: 70,
+  });
+  marker.addListener('mouseover', function(){
+    infowindow.open(map,marker);
+  });
+  marker.addListener('mouseout', function(){
+    infowindow.close();
+  });
+  
+  createMarker(parseFloat(receiptAdd.receive_address_lat),parseFloat(receiptAdd.receive_address_lng),receiptAdd.receive_address,map,directionsService,directionsDisplay,directionDistance,infowindowDistance);
+}
+function createMarker(lat,lng,address,map,directionsService,directionsDisplay,directionDistance,infowindowDistance){
+  var pos = {'lat': lat, 'lng': lng};
+
+  var newMarker = new google.maps.Marker({
+    position: pos,
+    map: map,
+  });
+  var content = '<div id="container">'+
+  '<h5>'+address+'</h5>'+'</div>';
+  var info = new google.maps.InfoWindow({
+    content: content, //chứa nội dung bên trong
+    maxwidth: 70,
+  });
+  newMarker.addListener('mouseover', function(){
+    info.open(map,newMarker);
+  });
+  newMarker.addListener('mouseout', function(){
+    info.close();
+  });
+  calculateAndDisplayRoute(directionsService, directionsDisplay, newMarker, directionDistance, infowindowDistance);
+}
+function calculateAndDisplayRoute(directionsService, directionsDisplay, newMarker, directionDistance, infowindowDistance) {
+var middle;
+directionsDisplay.setMap(map);
+directionsDisplay.setOptions({suppressMarkers: true});
+directionsService.route({
+  origin: marker.getPosition(), //vi tri 1
+  destination: newMarker.getPosition(), // vi tri 2
+  travelMode: 'DRIVING'
+}, function(response, status) {
+  if (status === 'OK') {
+    directionsDisplay.setDirections(response);
+    var m = Math.ceil((response.routes[0].overview_path.length)/2);
+    middle = response.routes[0].overview_path[m];
+    //sau khi chi duong xong thi se tinh toan quang duong va thoi gian
+     directionDistance.getDistanceMatrix({
+      origins: [marker.getPosition()],
+      destinations: [newMarker.getPosition()],
+      travelMode: 'DRIVING',
+    }, function(response, status) {
+      if(status === google.maps.DistanceMatrixStatus.OK){
+        var originList = response.originAddresses;
+        var destinationList = response.destinationAddresses;
+        for (var i = 0; i < originList.length; i++) {
+          var results = response.rows[i].elements;
+          for (var j = 0; j < results.length; j++) {
+            var element = results[j];
+            var dt = element.distance.text;//thoi gian
+            var dr = element.duration.text;//khoang cach
+          };
+        };
+        
+      };
+      var contentDistance = '<div>'+dt+'<br>'+dr+'</div';
+      infowindowDistance.setContent(contentDistance);
+      infowindowDistance.setPosition(middle);
+      infowindowDistance.open(map);
+      }); 
+  } else {
+    window.alert('Directions request failed due to ' + status);
+  }
+});
+}
 </script>
 @stop

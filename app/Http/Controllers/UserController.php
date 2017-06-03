@@ -27,15 +27,19 @@ class UserController extends Controller
     public function index()
     {
     	$user = User::find(Auth::user()->id);
-    	$receipts = Receipt::where('id_user',Auth::user()->id)->where('thanh_toan',0)->paginate(10);
-    	$old_receipts = Receipt::where('id_user',Auth::user()->id)->where('thanh_toan',1)->where('shipping',2)->paginate(10);
+    	$receipts = Receipt::where('id_user',Auth::user()->id)->where('thanh_toan',0)->where('delete_flg','!=',1)->paginate(10);
+    	$old_receipts = Receipt::where('id_user',Auth::user()->id)->where('thanh_toan',1)->where('delete_flg','!=',1)->where('shipping',2)->paginate(10);
     	return view('shopper.index', compact('user','receipts','old_receipts'));
     }
     public function view_receipt($id = null){
+        $receipt = Receipt::find($id);
+        $restaurant = RestaurantProfile::where('id_restaurant',$receipt->id_restaurant)->get();
+        foreach ($restaurant as $restaurant) {}
     	$user = User::find(Auth::user()->id);
-    	$receipt = Receipt::find($id);
     	$orders = Order::where('id_receipt',$id)->paginate(10);
-    	return view('shopper.view_receipt', compact('user','receipt','orders'));
+        $shipper = DB::table('shippers')->where('id',$receipt->id_shipper)->get();
+        foreach ($shipper as $shipper) {}
+    	return view('shopper.view_receipt', compact('user','receipt','orders','shipper','restaurant'));
     }
     public function edit_order(Request $request){
     	$user = User::find(Auth::user()->id);
@@ -76,7 +80,7 @@ class UserController extends Controller
 		$food->save();
     	return response()->json($save_food);
     }
-     public function like_food($id_food = null){
+    public function like_food($id_food = null){
     	$like_food = DB::table('like_foods')->insert(
 		    ['id_food' => $id_food, 'id_user' => Auth::user()->id]
 		);
@@ -134,5 +138,16 @@ class UserController extends Controller
         $user = User::find(Auth::user()->id);
         // dd($foods);
         return view('shopper.saved', compact('foods','posts','user'));
+    }
+    public function delete_receipt($id_receipt = null){
+        $receipt = Receipt::find($id_receipt);
+        $receipt->delete_flg = 1 ;
+        $receipt->save();
+        $orders = Order::where('id_receipt',$receipt->id)->get();
+        foreach ($orders as $order) {
+            $order->delete_flg = 1;
+            $order->save();
+        }
+        return response()->json($receipt);
     }
 }

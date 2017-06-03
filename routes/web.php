@@ -25,6 +25,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 Route::group(['prefix' => 'shipper', 'middleware' => 'shipper'], function () {
     Route::get('index', 'ShipperController@index');
     Route::post('index', 'ShipperController@index');
+    Route::get('edit_profile', 'ShipperController@edit_profile');
+    Route::post('edit_profile', 'ShipperController@edit_profile');
     Route::get('update_profile/{id}', 'ShipperController@update_profile');
     Route::post('update_profile/{id}', 'ShipperController@update_profile');
     Route::get('view_receipt_detail/{id}', 'ShipperController@view_receipt_detail');
@@ -59,6 +61,8 @@ Route::group(['prefix' => 'shopper', 'middleware' => 'shopper'], function () {
     Route::post('feedback', 'UserController@feedback');
     Route::get('saved', 'UserController@saved');
     Route::post('saved', 'UserController@saved');
+    Route::get('delete_receipt/{id}', 'UserController@delete_receipt');
+    Route::post('delete_receipt/{id}', 'UserController@delete_receipt');
 });
 Route::group(['prefix' => 'post'], function () {
     Route::get('index', 'PostController@index');
@@ -118,6 +122,7 @@ Route::group(['prefix' => 'restaurant', 'middleware' => 'restaurant'], function 
     Route::post('view_receipt_detail/{id}', 'RestaurantController@view_receipt_detail');
     Route::get('receipt_da_ship/{id}', 'RestaurantController@receipt_da_ship');
     Route::post('receipt_da_ship/{id}', 'RestaurantController@receipt_da_ship');
-    
+    Route::get('delete_receipt/{id}', 'RestaurantController@delete_receipt');
+    Route::post('delete_receipt/{id}', 'RestaurantController@delete_receipt');
 });
 

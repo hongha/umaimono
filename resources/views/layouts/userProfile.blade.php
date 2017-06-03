@@ -74,7 +74,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 @yield('content')
 
   <!-- Footer -->
-  <footer class="w3-container w3-padding-32 w3-dark-grey">
+  <footer class="w3-container w3-padding-32 w3-dark-grey" style="margin-top: 50px;">
   <div class="w3-row-padding">
     <div class="w3-third">
       <img src="{{ URL::asset('public/img/logo.gif') }}" alt="" style="margin-bottom: 15px;">

@@ -33,15 +33,21 @@ class ShipperController extends Controller
         if($shipper_info->name == '' | $shipper_info->phone_number == ''){
             return view('shipper/edit_profile',compact('shipper_info'));
         }else{
+            $shipper_info = DB::table('shippers')->where('id_user', $id_shipper)->get();
+                foreach ($shipper_info as $shipper_info) {
+            }
             $receipt_dangs = Receipt::where('id_shipper',$shipper_info->id)->where('delete_flg','!=',1)->where('shipping',1)->orderBy('id','desc')->get();
             $receipt_das = Receipt::where('id_shipper',$shipper_info->id)->where('delete_flg','!=',1)->where('shipping',2)->orderBy('id','desc')->get();
-            return view('shipper/index', compact('receipt_mois','receipt_dangs','receipt_das'));
+            return view('shipper/index', compact('receipt_mois','receipt_dangs','receipt_das','shipper_info'));
         }
     }
     public function view_receipt_detail($id_receipt = null){
+        $user = User::find(Auth::user()->id);
         $orders = Order::where('id_receipt',$id_receipt)->get();
         $receipt = Receipt::find($id_receipt);
-        return view('shipper/view_receipt_detail', compact('orders','receipt'));
+        $restaurant = RestaurantProfile::where('id_restaurant',$receipt->id_restaurant)->get();
+        foreach ($restaurant as $restaurant) {}
+        return view('shipper/view_receipt_detail', compact('user','orders','receipt','restaurant','shipper'));
     }
     public function update_profile(Request $request, $id = null){
 
@@ -53,5 +59,11 @@ class ShipperController extends Controller
             'gio_giao_hang' => $request->gio_giao_hang]
         );
         return redirect('shipper/index');
+    }
+    public function edit_profile(){
+        $id_shipper = Auth::user()->id;
+        $shipper_info = DB::table('shippers')->where('id_user', $id_shipper)->get();
+        foreach ($shipper_info as $shipper_info) {}
+        return view('shipper.edit_profile',compact('shipper_info'));
     }
 }

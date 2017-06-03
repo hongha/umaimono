@@ -48,6 +48,8 @@
                 </li>
                 <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Đơn hàng đã ship</a>
                 </li>
+                <li role="presentation" class=""><a href="#tab_content3" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Thông tin cá nhân</a>
+                </li>
               </ul>
               <div id="myTabContent" class="tab-content">
               <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
@@ -111,6 +113,55 @@
                   </tr>
                   @endforeach
                 </table>
+              </div>
+              <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
+              <h3>Thông tin cá nhân</h3>
+                <div class="x_content">
+            <form class="form-horizontal form-label-left" novalidate >
+            {{ csrf_field() }}
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Họ và tên <span class="required">:</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <span class="col-md-7 col-xs-12" style="height: 34px;padding: 6px 12px;font-size: 14px;line-height: 1.42857143;color: #555;">{{$shipper_info->name}}</span>
+                </div>
+              </div>
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Email <span class="required">:</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <span class="col-md-7 col-xs-12" style="height: 34px;padding: 6px 12px;font-size: 14px;line-height: 1.42857143;color: #555;">{{$shipper_info->email}}</span>
+                </div>
+              </div>
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="telephone">Số điện thoại <span class="required">:</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <span class="col-md-7 col-xs-12" style="height: 34px;padding: 6px 12px;font-size: 14px;line-height: 1.42857143;color: #555;">{{$shipper_info->phone_number}}</span>
+                </div>
+              </div>
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="telephone">Khung giờ giao hàng <span class="required">:</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <span class="col-md-7 col-xs-12" style="height: 34px;padding: 6px 12px;font-size: 14px;line-height: 1.42857143;color: #555;">{{$shipper_info->gio_giao_hang}}</span>
+                </div>
+              </div>
+              <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="telephone">Địa chỉ <span class="required">:</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <span class="col-md-7 col-xs-12" style="height: 34px;padding: 6px 12px;font-size: 14px;line-height: 1.42857143;color: #555;">{{$shipper_info->address}}</span>
+                </div>
+              </div>
+              <div class="ln_solid"></div>
+              <div class="form-group">
+                <div class="col-md-6 col-md-offset-3">
+                  <a id="send" type="submit" class="btn btn-success" href="{{url('shipper/edit_profile')}}"><i class="fa fa-edit m-right-xs"></i>Edit profile</a>
+                </div>
+              </div>
+            </form>
+          </div>
               </div>
           </div>
         </div>

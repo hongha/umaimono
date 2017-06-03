@@ -90,7 +90,7 @@
                         <td>{{$receipt->toltal_money}}đ</td>
                         <td>
                           <a href="{{url('restaurant/xac_nhan_receipt/'.$receipt->id)}}" class="btn btn-success" style="font-size: 10px;"><i class="fa fa-edit m-right-xs" ></i>Xác nhận</a>
-                          <a href="{{url('restaurant/delete_receipt/'.$receipt->id)}})" class="glyphicon glyphicon-trash btn btn-danger" style="font-size: 10px;"></a>  
+                          <a href="javascript:void(0)" onclick="delete_receipt({{$receipt->id}},this)" class="glyphicon glyphicon-trash btn btn-danger" style="font-size: 10px;"></a>  
                         </td>
                       </tr>
                       @endforeach
@@ -1028,5 +1028,26 @@ CKEDITOR.replace( 'edit-restaurant-profile',{
     filebrowserImageUploadUrl : '../ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images',
     filebrowserFlashUploadUrl : '../ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash'
 });
+function delete_receipt(id_receipt,a_tag) {
+      alertify.confirm("Bạn chắc chắn muốn xóa?", function (e) {
+      if (e) {
+      $.ajax({
+        url: '/umaimono/restaurant/delete_receipt/'+id_receipt,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var tr = a_tag.parentNode.parentNode;
+          tr.remove();
+          alertify.success("Đã xóa thành công!");
+        },
+        error: function(){
+          alertify.error("Có lỗi xảy ra!");
+        }
+      });
+    }
+  });
+} 
 </script>
 @stop

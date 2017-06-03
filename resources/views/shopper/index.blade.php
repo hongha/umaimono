@@ -42,7 +42,7 @@
         <a href="{{url('shopper/view_receipt/'.$receipt->id)}}" class="glyphicon glyphicon-eye-open btn btn-success" style="font-size: 10px;"></a>
         @if($receipt->shipping == 0)
         <a href="javascript:void(0)" onclick="edit_order({{$receipt->id}})" class="glyphicon glyphicon-pencil btn-warning btn" style="font-size: 10px;" data-toggle="modal" data-target="#modal-edit-receipt" ></a>
-        <a href="javascript:void(0)" class="glyphicon glyphicon-trash btn btn-danger" style="font-size: 10px;"></a> 
+        <a href="javascript:void(0)" onclick="delete_receipt({{$receipt->id}},this)" class="glyphicon glyphicon-trash btn btn-danger" style="font-size: 10px;"></a> 
         @endif    
       </td>
     </tr>
@@ -69,8 +69,8 @@
       <td>Đã giao hàng</td>
       <td>{{$old_receipt->toltal_money}}đ</td>
       <td>
-        <a href="{{url('shopper/view_receipt/'.$receipt->id)}}" class="glyphicon glyphicon-eye-open btn btn-success" style="font-size: 10px;"></a>
-        <a href="javascript:void(0)" class="glyphicon glyphicon-trash btn btn-danger" style="font-size: 10px;"></a>  
+        <a href="{{url('shopper/view_receipt/'.$old_receipt->id)}}" class="glyphicon glyphicon-eye-open btn btn-success" style="font-size: 10px;"></a>
+        <a href="javascript:void(0)" onclick="delete_receipt({{$old_receipt->id}},this)" class="glyphicon glyphicon-trash btn btn-danger" style="font-size: 10px;"></a>  
       </td>
     </tr>
     @endforeach
@@ -128,6 +128,27 @@
   <script>
     function edit_order(id_receipt) {
       document.getElementById("id_receipt").value = id_receipt;  
-    }  
+    }
+    function delete_receipt(id_receipt,a_tag) {
+      alertify.confirm("Bạn chắc chắn muốn xóa?", function (e) {
+      if (e) {
+      $.ajax({
+        url: '/umaimono/shopper/delete_receipt/'+id_receipt,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var tr = a_tag.parentNode.parentNode;
+          tr.remove();
+          alertify.success("Đã xóa thành công!");
+        },
+        error: function(){
+          alertify.error("Có lỗi xảy ra!");
+        }
+      });
+    }
+  });
+}  
   </script>
 @stop
