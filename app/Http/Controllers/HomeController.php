@@ -34,8 +34,11 @@ class HomeController extends Controller
         $liked_foods = DB::table('like_foods')->where('id_user','=',Auth::user()->id)->where('delete_flg','=',0)->pluck('id_food');
         $liked_posts = DB::table('like_posts')->where('id_user','=',Auth::user()->id)->where('delete_flg','=',0)->pluck('id_post'); 
         }
+        $food_pb = Food::where('delete_flg','!=',1)->orderBy('saveds','desc')->orderBy('likes','desc')->orderBy('comments','desc')->limit(9)->get();
+        $post_pb = Post::where('delete_flg','!=',1)->orderBy('saveds','desc')->orderBy('likes','desc')->orderBy('comments','desc')->limit(9)->get();
     	$foods = Food::where('delete_flg','!=',1)->orderBy('id','desc')->limit(9)->get();
     	$posts = Post::where('delete_flg','!=',1)->orderBy('id','desc')->limit(9)->get();
-    	return view('homepage', compact('food_types','foods','posts','saved_foods','saved_posts','liked_foods','liked_posts'));
+        $restaurant_infos = RestaurantProfile::where('address','!=',null)->where('lat','!=',0)->where('lng','!=',0)->get();;
+    	return view('homepage', compact('food_types','foods','posts','saved_foods','saved_posts','liked_foods','liked_posts','restaurant_infos','food_pb','post_pb'));
     }
 }

@@ -6,6 +6,10 @@
 </head>
 <body>
 <div id="map"></div>
+
+
+
+
 	<!-- <script src="{{ URL::asset('public/js/jquery.min.js') }}"></script> -->
 	<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMOaA3Yy3TAZgJwoyjuO7YiVbVa5Ye0Hc&callback=initMap"
 	    async defer></script>

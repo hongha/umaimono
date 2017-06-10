@@ -41,7 +41,7 @@
       <td>
         <a href="{{url('post/view_food/'.$order->id_food)}}" class="glyphicon glyphicon-eye-open btn btn-success" style="font-size: 10px;"></a>
         <a href="javascript:void(0)" onclick="edit_order({{$order->id}},{{$index}},{{$order->id_receipt}});" class="glyphicon glyphicon-pencil btn-warning btn" style="font-size: 10px;" data-toggle="modal" data-target="#modal-edit-food" ></a>
-        <a href="javascript:void(0)" class="glyphicon glyphicon-trash btn btn-danger" style="font-size: 10px;"></a>
+        <a href="javascript:void(0)" onclick="delete_order({{$order->id}},this)" class="glyphicon glyphicon-trash btn btn-danger" style="font-size: 10px;"></a>
       </td>
     </tr>
     @endforeach
@@ -93,6 +93,28 @@
   </div>
 </div>
 <script>
+function delete_order(id_order,a_tag) {
+      alertify.confirm("Bạn chắc chắn muốn xóa?", function (e) {
+      if (e) {
+      $.ajax({
+        url: '/umaimono/shopper/delete_order/'+id_order,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var tr = a_tag.parentNode.parentNode;
+          tr.remove();
+          alertify.success("Đã xóa thành công!");
+        },
+        error: function(){
+          alertify.error("Có lỗi xảy ra!");
+        }
+      });
+    }
+  });
+}  
+
 function edit_order(id_order,tr_id,id_receipt) {
   document.getElementById("id_order").value = id_order;
   document.getElementById("id_receipt").value = id_receipt;

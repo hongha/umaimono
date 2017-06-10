@@ -253,7 +253,7 @@
         
 
 
-        // //start current location
+        // //start current location | lấy vị trí hiện tại làm trung tâm
         // var currentLocationButton = document.getElementById('current-location');
         // google.maps.event.addDomListener(currentLocationButton, 'click', function(){
         //     navigator.geolocation.getCurrentPosition(function(position) {

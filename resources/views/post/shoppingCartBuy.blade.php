@@ -32,7 +32,7 @@
     <span class="float-left font16 bold700">Tạm tính</span>
     <span class="font16 float-right bold700 txt-blue" id="money_Temporarily">{{$price_total}}đ</span>
   </div>
-  <a href="javascript:void(0)" class="btn-book-first after-lick" onclick="checkout()">
+  <a href="javascript:void(0)" class="btn-book-first after-lick" onclick="checkout({{$id}})">
   <i class="fa fa-check-circle"></i>
   Đặt trước</a>
   <div id="position" hidden="">

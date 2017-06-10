@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Session;
 use App\User;
 use App\Order;
 use App\Receipt;
+use App\CommentPost;
+use App\CommentFood;
 use App\ShoppingCart;
 use App\RestaurantProfile;
 use Illuminate\Support\Collection;
@@ -36,15 +38,19 @@ class UserController extends Controller
         $restaurant = RestaurantProfile::where('id_restaurant',$receipt->id_restaurant)->get();
         foreach ($restaurant as $restaurant) {}
     	$user = User::find(Auth::user()->id);
-    	$orders = Order::where('id_receipt',$id)->paginate(10);
-        $shipper = DB::table('shippers')->where('id',$receipt->id_shipper)->get();
-        foreach ($shipper as $shipper) {}
+    	$orders = Order::where('id_receipt',$id)->where('delete_flg','!=',1)->paginate(10);
+        if(isset($receipt->id_shipper)){
+            $shipper = DB::table('shippers')->where('id',$receipt->id_shipper)->get();
+            foreach ($shipper as $shipper) {}
+        }else{
+            $shipper = null;
+        } 
     	return view('shopper.view_receipt', compact('user','receipt','orders','shipper','restaurant'));
     }
     public function edit_order(Request $request){
     	$user = User::find(Auth::user()->id);
     	if($request->options == 0){
-    		$orders = Order::where('id_receipt',$request->id_receipt)->get();
+    		$orders = Order::where('id_receipt',$request->id_receipt)->where('delete_flg','!=',1)->get();
     		return view('shopper.edit_order_food', compact('user','orders'));
     	}elseif($request->options == 1){
     		$receipt = Receipt::find($request->id_receipt);
@@ -139,6 +145,15 @@ class UserController extends Controller
         // dd($foods);
         return view('shopper.saved', compact('foods','posts','user'));
     }
+    public function comment(){
+        $saved_foods = DB::table('saved_foods')->where('id_user','=',Auth::user()->id)->where('delete_flg','=',0)->pluck('id_food');
+        $saved_posts = DB::table('saved_posts')->where('id_user','=',Auth::user()->id)->where('delete_flg','=',0)->pluck('id_post'); 
+        $food_ids = CommentFood::where('id_user',Auth::user()->id)->where('delete_flg','!=',1)->distinct()->pluck('id_food');
+        $post_ids = CommentPost::where('id_user',Auth::user()->id)->where('delete_flg','!=',1)->distinct()->pluck('id_post');
+        $user = User::find(Auth::user()->id);
+        // dd($foods);
+        return view('shopper.comment', compact('food_ids','post_ids','user','saved_foods','saved_posts'));
+    }
     public function delete_receipt($id_receipt = null){
         $receipt = Receipt::find($id_receipt);
         $receipt->delete_flg = 1 ;
@@ -147,6 +162,23 @@ class UserController extends Controller
         foreach ($orders as $order) {
             $order->delete_flg = 1;
             $order->save();
+        }
+        return response()->json($receipt);
+    }
+    public function delete_order($id_order = null){
+        $order = Order::find($id_order);
+        $order->delete_flg = 1 ;
+        $order->save();
+        $receipt = Receipt::find($order->id_receipt);
+        $orders = Order::where('id_receipt',$order->id_receipt)->where('delete_flg','!=',1)->first();
+        if(count($orders)){
+            $money_delete = $order->price*$order->number;
+            $receipt->toltal_money = $receipt->toltal_money - $money_delete;
+            $receipt->save();
+            
+        }else{
+            $receipt->delete_flg = 1;
+            $receipt->save();
         }
         return response()->json($receipt);
     }

@@ -82,15 +82,6 @@
               <div>
                 <button type="submit"  class="btn btn-default submit">Register</button>
               </div>
-              <div>
-                <ul class="register_social">
-                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                    <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-                    <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                    <li><a href="#"><i class="fa fa-behance"></i></a></li>
-                </ul>
-              </div>
               <div class="clearfix"></div>
 
               <div class="separator">

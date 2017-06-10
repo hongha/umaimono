@@ -1,10 +1,10 @@
 @extends('layouts.home')
 @section('title')
-    {{$food->name}} - @parent
+    Nhà hàng - @parent
 @stop
 @section('content')
 <!-- Page Container -->
-<?php use App\RestaurantProfile; use App\User; ?>
+<?php use App\User; ?>
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:20px">    
   <!-- The Grid -->
   <div class="w3-row">
@@ -65,7 +65,7 @@
       @if(isset($posts ))
         <div class="w3-card-2 w3-round w3-white">
         <div class="w3-container" style="padding-top: 15px;">
-        <h4>Các bài viết gần đây</h4>
+        <h4>Các bài viết</h4>
         <hr class="w3-clear">
           @foreach($posts as $post_l)
           <div>
@@ -88,66 +88,21 @@
     <!-- Middle Column -->
     <div class="w3-col m7">
       
-      <div class="w3-container w3-card-2 w3-white w3-round margin-left-right-16"><br>
-        <img src="../../avatar/{{$user->avatar}}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
-        <span class="w3-right w3-opacity">{{$food->created_at}}</span>
-        <h4>{{$user->name}}</h4><br>
-        <h3>{{$food->name}}</h3>
-        <hr class="w3-clear">
-        <div class="w3-row-padding" style="margin:0 -16px; text-align: justify;">
-          <div class="w3-half" style="height: 200px; overflow: hidden !important;">
-            <img src="../../post/food_img/{{$food->avatar}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
-          </div>
-          <div class="w3-half">
-          <span style="font-size: 16px; margin: 0px; padding: 0px; line-height: 1.3em; font-weight: bold;">Nguyên liệu: </span><span style=" color: #a1a1a1; font-size: 14px;">{{$food->material}}</span><br>
-          <span style="font-size: 16px; margin: 0px; padding: 0px; line-height: 1.3em; font-weight: bold;">Địa chỉ: </span>
-          <span style=" color: #a1a1a1; font-size: 14px;"> <?php $restaurants = RestaurantProfile::where('id_restaurant',$food->id_restaurant)->get(); foreach ($restaurants as $restaurant) {
-             echo $restaurant->address;
-          } ?></span><br>
-          <span style="font-size: 16px; margin: 0px; padding: 0px; line-height: 1.3em; font-weight: bold;">Giá: </span><span style=" color: #a1a1a1; font-size: 14px;">{{$food->price}} đ</span>
-          <a href="javascript:void(0)" class="btn-book-first after-lick" onclick="themHang({{$food->id}})" style="width: 120px !important;float: right;margin-right: 121px;     margin-top: 30px;">
-          <i class="fa fa-check-circle"></i>
-          Thêm hàng</a>
-          </div>
-        </div>
-        <br>
-        <div>
-        <?php $j = 0; if(isset(Auth::user()->id)){foreach ($liked_foods as $liked_food) {
-            if($food->id == $liked_food){$j = 1;break;}}} ?>
-          <?php if($j == 1){?>
-          <a href="javascript:void(0)" class="danh-muc" style="margin-left: 15px;" onclick="updateLikeFood({{$food->id}},this)"><span>Bỏ thích</span><input type="text" name="" value="1" hidden=""></a>&nbsp;<span>{{$food->likes}}</span>
-          <?php }else{?>
-          <a href="javascript:void(0)" class="danh-muc" style="margin-left: 15px;" onclick="updateLikeFood({{$food->id}},this)"><span>Thích</span><input type="text" name="" value="0" hidden=""></a>&nbsp;<span>{{$food->likes}}</span>
-          <?php } ?>
-          <a href="{{url('post/view_food/'.$food->id)}}" style="margin-left: 15px;"><i class="fa fa-comments" aria-hidden="true"></i></a>&nbsp;<span id="comment_post_number">{{$food->comments}}</span>
-          <a href="javascript:void(0)" style="margin-left: 15px;"><i class="fa fa-bookmark"></i></a>&nbsp;<span>{{$food->saveds}}</span>
-          <?php $i = 0; if(isset(Auth::user()->id)){foreach ($saved_foods as $save_food) {
-            if($food->id == $save_food){$i = 1;break;}}} ?>
-          <?php if($i == 1){?>
-          <a href="javascript:void(0)" style="color: #FFF;background: #cf2127;padding: 2px 10px;margin: -3px 0;border-radius: 2px;float: right;margin-right: 15px;" class="hover-black" onclick="update({{$food->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Bỏ Lưu</span><input type="text" name="" value="1" hidden=""></a> 
-           <?php }else{?>
-          <a href="javascript:void(0)" style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;float: right;margin-right: 15px;" class="hover-black" onclick="update({{$food->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span><input type="text" name="" value="0" hidden=""></a>
-           <?php } ?>
-           &nbsp;
-           &nbsp;
-           <span>Được đặt <b>{{$food->ordered}}</b> lần</span>
-        </div>
-           <br> 
-      </div>
       
-      <div class="w3-container w3-card-2 w3-white w3-round w3-margin">
+      
+      <div class="w3-container w3-card-2 w3-white w3-round" style="margin-left: 16px;margin-right: 16px">
         <h3>Các món ăn của nhà hàng</h3>
         <hr class="w3-clear">
         @if(isset($foods ))
-        @foreach ($foods as $foodh)
+        @foreach ($foods as $food)
         <div class="deli-box-menu-detail clearfix">
         <div class="img-food-detail pull-left">
-        <img src="../../post/food_img/{{$foodh->avatar}}" width="60" height="60" onclick="">
+        <img src="../../post/food_img/{{$food->avatar}}" width="60" height="60" onclick="">
         </div>
         <div class="deli-name-food-detail pull-left">
-        <a class="deli-title-name-food" href="{{url('post/view_food/'.$foodh->id)}}">
+        <a class="deli-title-name-food" href="{{url('post/view_food/'.$food->id)}}">
         <h3 style="font-size: 16px; margin: 0px; padding: 0px; line-height: 1.3em; font-weight: bold;">
-        {{$foodh->name}}</h3>
+        {{$food->name}}</h3>
         </a>
         <span class="deli-desc"></span>
         <div class="deli-rating-food">
@@ -156,21 +111,21 @@
         Đã được đặt <span style="color: #464646; font-weight: bold;">2</span> lần trong tháng</p>
         <!-- <a style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span></a> -->
         <?php $i = 0; if(isset(Auth::user()->id)){foreach ($saved_foods as $save_food) {
-            if($foodh->id == $save_food){$i = 1;break;}}} ?>
+            if($food->id == $save_food){$i = 1;break;}}} ?>
           <?php if($i == 1){?>
-          <a href="javascript:void(0)" style="color: #FFF;background: #cf2127;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="updateFood({{$foodh->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Bỏ Lưu</span><input type="text" name="" value="1" hidden=""></a> 
+           <a href="javascript:void(0)" style="color: #FFF;background: #cf2127;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="update({{$food->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Bỏ Lưu</span><input type="text" name="" value="1" hidden=""></a> 
            <?php }else{?>
-          <a href="javascript:void(0)" style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="updateFood({{$foodh->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span><input type="text" name="" value="0" hidden=""></a>
-        <?php } ?>
+            <a href="javascript:void(0)" style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="update({{$food->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span><input type="text" name="" value="0" hidden=""></a>
+           <?php } ?>
         </div>
         <div class="deli-more-info">
         <div class="adding-food-cart">
-        <span class="btn-adding" onclick="themHang({{$foodh->id}});">+</span>
+        <span class="btn-adding" onclick="themHang({{$food->id}});">+</span>
         </div>
         <div class="product-price">
         <p class="current-price">
         <span class="txt-blue font16 bold">
-        {{$foodh->price}}</span>
+        {{$food->price}}</span>
         <span class="unit">đ</span>
         </p>
         </div>
@@ -179,84 +134,8 @@
         @endforeach
         @endif 
       </div> 
-          
-      <div class="w3-container w3-card-2 w3-white w3-round w3-margin">
-        <h3>Bình luận</h3>
-        <hr class="w3-clear">
-        <div class="">
-          <div class="">
-          <!-- Contenedor Principal -->
-            <div class="comments-container">
-            <ul id="comments-list" class="comments-list">
-            @foreach($comment_foods as $comment_post)
-              <li>
-                <div class="comment-main-level">
-                  <!-- Avatar -->
-                  <div class="comment-avatar">
-                  <?php $comment_user = User::where('id',$comment_post->id_user)->get(); 
-                  foreach ($comment_user as $comment_user) {} ?>
-                  <img src="{{ URL::asset('avatar/'.$comment_user->avatar) }}" alt="">
-                  </div>
-                  <!-- Contenedor del Comentario -->
-                  <div class="comment-box">
-                    <div class="comment-head">
-                    <?php if($comment_post->id_user == $food->user_id){?>
-                      <h6 class="comment-name by-author"><a href="{{url('user/view/'.$comment_post->id_user)}}">{{$comment_user->name}}</a></h6>
-                    <?php }elseif($comment_user->role == 5 || $comment_user->role == 4){ ?>
-                      <h6 class="comment-name admin"><a href="{{url('user/view/'.$comment_post->id_user)}}">{{$comment_user->name}}</a></h6>
-                    <?php }else{?>
-                      <h6 class="comment-name"><a href="{{url('user/view/'.$comment_post->id_user)}}">{{$comment_user->name}}</a></h6>
-                    <?php }?>
-                      <span>{{$comment_post->created_at}}</span>
-                      <?php if(isset(Auth::user()->id)){
-                      if(Auth::user()->id == $comment_post->id_user){ ?>
-                      <a href="javascript:void(0)" onclick="deleteComment({{$comment_post->id}},this)"><i class="fa fa-trash-o"></i></a>
-                      <a href="javascript:void(0)" onclick="loadEditComment({{$comment_post->id}},this)"><i class="fa fa-pencil"></i></a>                     
-                      <?php }}?>
-                    </div>
-                    <div class="comment-content">
-                      <span>{{$comment_post->content}}</span><br><br>
-                      <a href="" style="font-size: 14px;"><span>Thích</span></a>&nbsp;<span style="font-size: 14px;">20</span>&nbsp;&nbsp;<a href="" style="font-size: 14px;"><span>Trả lời</span></a>&nbsp;<span style="font-size: 14px;">20</span>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            @endforeach
-            </ul>
-            <ul class="comments-list">
-              <li>
-              <?php if(isset(Auth::user()->id)){?>
-                <div class="comment-main-level">
-                  <!-- Avatar -->
-                  <div class="comment-avatar"><img src="{{ URL::asset('avatar/'.Auth::user()->avatar) }}" alt=""></div>
-                  <!-- Contenedor del Comentario -->
-                  <div class="comment-box">
-                    <div class="comment-head">
-                      <h6 class="comment-name"><a href="#">{{Auth::user()->name}}</a></h6>
-                      <i class="fa fa-reply"></i>
-                      <i class="fa fa-heart"></i>
-                    </div>
-                    <div class="comment-content">
-                    <form id="form" action="{{url('post/create_comment_food/'.$food->id)}}" method="POST">
-                    {!! csrf_field() !!}
-                    <input type="text" name="id_user" value="{{Auth::user()->id}}" hidden="">
-                    <textarea style="height: 80px; margin-bottom: 15px; margin-top: 15px;" class="form-control" name="content" id="content" required=""></textarea>
-                    </form>
-                    <button class="btn btn-success" onclick="commentAjax();">Bình luận</button>
-                    </div>
-                  </div>
-                </div>
-                <?php }else{?>
-                <a class="btn btn-success" href="{{url('login')}}">Bình luận</a>
-                <?php  } ?>
-              </li>
-            </ul>
-          </div>
-          </div>
-        </div>
-      </div> 
+      
     <!-- End Middle Column -->
-
     </div>
     
     <!-- Right Column -->
@@ -268,7 +147,7 @@
             <span class="float-left bold700" id="number_total">{{$number_total}}&nbsp;</span>
             <span class="float-left">Phần</span>
             </a>
-            <a href="javascript:void(0)" class="btn-reset" onclick="reset_menu({{$food->id_restaurant}})">Reset</a>
+            <a href="javascript:void(0)" class="btn-reset" onclick="reset_menu()">Reset</a>
           </div>
           <?php if($shopping_carts != null){foreach ($shopping_carts as $shopping_cart) {?>
             <div class="row-bill reset_menu" id="{{$shopping_cart->id}}">
@@ -295,18 +174,17 @@
             <span class="float-left font16 bold700">Tạm tính</span>
             <span class="font16 float-right bold700 txt-blue" id="money_Temporarily">{{$price_total}}đ</span>
           </div>
-          <a href="javascript:void(0)" class="btn-book-first after-lick" onclick="checkout({{$food->id_restaurant}})">
+          <a href="javascript:void(0)" class="btn-book-first after-lick" onclick="checkout({{$restaurant_info->id_restaurant}})">
           <i class="fa fa-check-circle"></i>
           Đặt trước</a>
         </div>
       </div>
-
       <div class="w3-card-2 w3-round w3-white w3-center padding-10">
         <div class="text-align-left">
-        <h4>Các món được lưu nhiều</h4>
+        <h4>Các món được đặt nhiều</h4>
         <hr class="w3-clear">
-        @if(isset($luu_nhieus ))
-        @foreach($luu_nhieus as $food_l)
+        @if(isset($luu_nhieus))
+        @foreach ($luu_nhieus as $food_l)
         <div class="deli-box-menu-detail clearfix">
         <div class="img-food-detail pull-left">
         <img src="../../post/food_img/{{$food_l->avatar}}" width="60" height="60" onclick="">
@@ -323,9 +201,9 @@
         <?php $i = 0; if(isset(Auth::user()->id)){foreach ($saved_foods as $save_food) {
             if($food_l->id == $save_food){$i = 1;break;}}} ?>
           <?php if($i == 1){?>
-          <a href="javascript:void(0)" style="color: #FFF;background: #cf2127;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="updateFood({{$food_l->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Bỏ Lưu</span><input type="text" name="" value="1" hidden=""></a> 
+          <a href="javascript:void(0)" style="color: #FFF;background: #cf2127;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="update({{$food_l->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Bỏ Lưu</span><input type="text" name="" value="1" hidden=""></a> 
            <?php }else{?>
-          <a href="javascript:void(0)" style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="updateFood({{$food_l->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span><input type="text" name="" value="0" hidden=""></a>
+          <a href="javascript:void(0)" style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="update({{$food_l->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span><input type="text" name="" value="0" hidden=""></a>
         <?php } ?>
         </div>
         <div class="deli-more-info">
@@ -351,36 +229,36 @@
         <h4>Các món được thích nhiều</h4>
         <hr class="w3-clear">
         @if(isset($like_nhieus))
-        @foreach ($like_nhieus as $food_k)
+        @foreach ($like_nhieus as $food_l)
         <div class="deli-box-menu-detail clearfix">
         <div class="img-food-detail pull-left">
-        <img src="../../post/food_img/{{$food_k->avatar}}" width="60" height="60" onclick="">
+        <img src="../../post/food_img/{{$food_l->avatar}}" width="60" height="60" onclick="">
         </div>
         <div class="pull-left" style="margin-left: 10px;line-height: 1.8em; overflow: overflow: hidden;">
-        <a class="deli-title-name-food" href="{{url('post/view_food/'.$food_k->id)}}" style="height: 20px;overflow: hidden;">
+        <a class="deli-title-name-food" href="{{url('post/view_food/'.$food_l->id)}}" style="height: 20px;overflow: hidden;">
         <span style="font-size: 14px; margin: 0px; padding: 0px; line-height: 1.3em; font-weight: bold;display: inline-block;">
-        {{$food_k->name}}
+        {{$food_l->name}}
         </span>
         </a>
         <p style="margin: 0; color: #a1a1a1; font-size: 11px;">
         Đã đặt <span style="color: #464646; font-weight: bold;">2</span> lần trong tháng</p>
         <!-- <a style="padding: 3px; color: #888;;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span></a> -->
         <?php $i = 0; if(isset(Auth::user()->id)){foreach ($saved_foods as $save_food) {
-            if($food_k->id == $save_food){$i = 1;break;}}} ?>
+            if($food_l->id == $save_food){$i = 1;break;}}} ?>
           <?php if($i == 1){?>
-          <a href="javascript:void(0)" style="color: #FFF;background: #cf2127;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="update({{$food_k->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Bỏ Lưu</span><input type="text" name="" value="1" hidden=""></a> 
+          <a href="javascript:void(0)" style="color: #FFF;background: #cf2127;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="update({{$food_l->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Bỏ Lưu</span><input type="text" name="" value="1" hidden=""></a> 
            <?php }else{?>
-          <a href="javascript:void(0)" style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="update({{$food_k->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span><input type="text" name="" value="0" hidden=""></a>
+          <a href="javascript:void(0)" style="color: #888;background: #ddd;padding: 2px 10px;margin: -3px 0;border-radius: 2px;" class="hover-black" onclick="update({{$food_l->id}},this)"><i class="fa fa-bookmark"></i>&nbsp;<span>Lưu</span><input type="text" name="" value="0" hidden=""></a>
         <?php } ?>
         </div>
         <div class="deli-more-info">
         <div class="adding-food-cart">
-        <span class="btn-adding" onclick="themHang({{$food_k->id}});">+</span>
+        <span class="btn-adding" onclick="themHang({{$food_l->id}});">+</span>
         </div>
         <div class="product-price">
         <p class="current-price">
         <span class="txt-blue bold">
-        {{$food_k->price}}</span>
+        {{$food_l->price}}</span>
         <span class="unit">đ</span>
         </p>
         </div>
@@ -393,10 +271,10 @@
     </div>
     <!-- End Right Column -->   
   <!-- End Grid -->
+    <?php if(isset(Auth::user()->id)){$user_id = Auth::user()->id;}else{$user_id = 0;} ?>
   </div>
-
-  <?php if(isset(Auth::user()->id)){$user_id = Auth::user()->id;}else{$user_id = 0;} ?>
 <script>
+action="{{url('post/edit_comment_post/'.'+id_comment+')}}"
 function editComment(id_comment, button) {
   var div = button.parentNode;
   var form = div.getElementsByTagName("form");
@@ -407,7 +285,7 @@ function editComment(id_comment, button) {
     alertify.error("Hãy nhập vào nhận xét!");
   }else{
     $.ajax({
-    url: '/umaimono/post/edit_comment_food/'+id_comment,
+    url: '/umaimono/post/edit_comment_post/'+id_comment,
     type: 'POST',
     data: data,
     success: function (response) {
@@ -434,7 +312,7 @@ function deleteComment(id_comment,a_tag){
     alertify.confirm("Bạn chắc chắn muốn xóa?", function (e) {
     if (e) {
       $.ajax({
-        url: '/umaimono/post/delete_comment_food/'+id_comment,
+        url: '/umaimono/post/delete_comment_post/'+id_comment,
         type: 'POST',
         data: {
             "_token": "{{ csrf_token() }}",
@@ -462,7 +340,7 @@ function commentAjax(){
     data: data,
      success: function (response) {
       var ul = document.getElementById("comments-list");
-      $('<?php if(isset(Auth::user()->id)){?><li><div class="comment-main-level"><div class="comment-avatar"><img src="{{ URL::asset('avatar/'.Auth::user()->avatar) }}"></div><div class="comment-box"><div class="comment-head"><h6 class="comment-name"><a href="http://creaticode.com/blog">{{Auth::user()->name}}</a></h6><span>'+response.created_at+'</span><a href="javascript:void(0)" onclick="deleteComment('+response.id+',this)"><i class="fa fa-trash-o"></i></a><a href="javascript:void(0)" onclick="loadEditComment('+response.id+',this)"><i class="fa fa-pencil"></i></a> </div><div class="comment-content"><span>'+response.content+'</span><br><br><a href="" style="font-size: 14px;"><span>Thích</span></a>&nbsp;<span style="font-size: 14px;">20</span>&nbsp;&nbsp;<a href="" style="font-size: 14px;"><span>Trả lời</span></a>&nbsp;<span style="font-size: 14px;">20</span></div></div></div></li><?php }?>').appendTo(ul);
+      $('<?php if(isset(Auth::user()->id)){?><li><div class="comment-main-level"><div class="comment-avatar"><img src="{{ URL::asset('avatar/'.Auth::user()->avatar) }}"></div><div class="comment-box"><div class="comment-head"><h6 class="comment-name by-author"><a href="http://creaticode.com/blog">{{Auth::user()->name}}</a></h6><span>'+response.created_at+'</span><a href="javascript:void(0)" onclick="deleteComment('+response.id+',this)"><i class="fa fa-trash-o"></i></a><a href="javascript:void(0)" onclick="loadEditComment('+response.id+',this)"><i class="fa fa-pencil"></i></a> </div><div class="comment-content"><span>'+response.content+'</span></div></div></div></li><?php }?>').appendTo(ul);
       var comment_post_number = document.getElementById("comment_post_number");
       comment_post_number.innerHTML = parseInt(comment_post_number.innerHTML,10) + 1;
       $("textarea").val('');
@@ -470,43 +348,6 @@ function commentAjax(){
   });
   }
 }
-
-
-function updateFood(id_food,a_tag){
-  var a = a_tag.getElementsByTagName("input")[0];
-  var data =<?php echo json_encode($user_id, JSON_FORCE_OBJECT) ?>;
-  if(!data){window.location.href = "http://localhost/umaimono/login";
-  }else{
-    if(a.value == 1){
-      $.ajax({
-        url: '/umaimono/shopper/dis_save_food/'+id_food,
-        type: 'POST',
-        data: {
-            "_token": "{{ csrf_token() }}",
-            },
-         success: function (response) {
-          a_tag.style.backgroundColor = "#ddd";
-          a_tag.style.color = "#888";
-          a_tag.getElementsByTagName("span")[0].innerHTML = "Lưu";
-          a.value = 0;
-        }
-      });
-    }else{
-      $.ajax({
-        url: '/umaimono/shopper/save_food/'+id_food,
-        type: 'POST',
-        data: {
-            "_token": "{{ csrf_token() }}",
-            },
-         success: function (response) {
-          a_tag.style.backgroundColor = "#cf2127";
-          a_tag.style.color = "#FFF";
-          a_tag.getElementsByTagName("span")[0].innerHTML = "Bỏ Lưu";
-          a.value = 1;
-        }
-      });
-    }
-}}
 
 function updateLikePost(id_post,a_tag){
   var a = a_tag.getElementsByTagName("input")[0];
@@ -601,10 +442,6 @@ function update(id_food,a_tag){
             "_token": "{{ csrf_token() }}",
             },
          success: function (response) {
-          var a_par = a_tag.parentNode;
-          var spans = a_par.getElementsByTagName("span");
-          var saveds = parseInt(spans[3].innerHTML,10);
-          spans[3].innerHTML = saveds - 1;
           a_tag.style.backgroundColor = "#ddd";
           a_tag.style.color = "#888";
           a_tag.getElementsByTagName("span")[0].innerHTML = "Lưu";
@@ -619,10 +456,6 @@ function update(id_food,a_tag){
             "_token": "{{ csrf_token() }}",
             },
          success: function (response) {
-          var a_par = a_tag.parentNode;
-          var spans = a_par.getElementsByTagName("span");
-          var saveds = parseInt(spans[3].innerHTML,10);
-          spans[3].innerHTML = saveds + 1;
           a_tag.style.backgroundColor = "#cf2127";
           a_tag.style.color = "#FFF";
           a_tag.getElementsByTagName("span")[0].innerHTML = "Bỏ Lưu";
@@ -690,31 +523,14 @@ function myFunction(id) {
 
 // Used to toggle the menu on smaller screens when clicking on the menu button
 function openNav() {
-  var x = document.getElementById("navDemo");
-  if (x.className.indexOf("w3-show") == -1) {
-      x.className += " w3-show";
-  } else { 
-      x.className = x.className.replace(" w3-show", "");
-  }
+    var x = document.getElementById("navDemo");
+    if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+    } else { 
+        x.className = x.className.replace(" w3-show", "");
+    }
 }
-function blurFunction(id_food,input){
-  if(!$(input).val()){
-    console.log(input);
-  }else{
-    $.ajax({
-    url: '/umaimono/post/add_ghi_chu/'+id_food,
-    type: 'POST',
-    data: {
-        "_token": "{{ csrf_token() }}",
-        "id": id_food,
-        "ghi_chu": $(input).val(),
-        },
-    success: function (response) {
-        alertify.success("Đã thêm ghi chú!");
-      }
-    });
-  }
-}
+
 function add_food(id_food){
 
   $.ajax({
@@ -741,6 +557,24 @@ function add_food(id_food){
         alertify.success("Đã thêm hành công!");
     }
 });
+}
+function blurFunction(id_food,input){
+  if(!$(input).val()){
+    console.log(input);
+  }else{
+    $.ajax({
+    url: '/umaimono/post/add_ghi_chu/'+id_food,
+    type: 'POST',
+    data: {
+        "_token": "{{ csrf_token() }}",
+        "id": id_food,
+        "ghi_chu": $(input).val(),
+        },
+    success: function (response) {
+        alertify.success("Đã thêm ghi chú!");
+      }
+    });
+  }
 }
 function minus_food(id_food){
 
@@ -772,12 +606,12 @@ function minus_food(id_food){
     }
 });
 }
-function reset_menu(id){
+function reset_menu(){
   var data =<?php echo json_encode($shopping_carts, JSON_FORCE_OBJECT) ?>;
   if(!data){window.location.href = "http://localhost/umaimono/login";
   }else{
   $.ajax({
-    url: '/umaimono/post/reset_menu/'+id,
+    url: '/umaimono/post/reset_menu',
     type: 'POST',
     data: {
         "_token": "{{ csrf_token() }}",
@@ -799,13 +633,7 @@ function checkout(id){
   if(!data){
     window.location.href = "http://localhost/umaimono/login";
   }else{
-    var money_total = document.getElementById("money_total");
-    console.log(parseInt(money_total.innerHTML,10));
-    if(parseInt(money_total.innerHTML,10) < 50000){
-      alertify.alert("Rất xin lỗi! Bạn cần mua nhiều hơn hoặc bằng 50,000đ!");
-    }else{
-      window.location.href = 'http://localhost/umaimono/post/buy/'+id;
-    }
+    window.location.href = 'http://localhost/umaimono/post/buy/'+id;
   }
   
 }

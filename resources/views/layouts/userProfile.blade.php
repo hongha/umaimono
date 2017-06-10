@@ -63,7 +63,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
       <!-- <button class="w3-button w3-black">ALL</button> -->
       <a class="w3-button w3-white" href="{{url('shopper/index')}}"><i class="fa fa-diamond w3-margin-right"></i>Đơn hàng</a>
       <a class="w3-button w3-white w3-hide-small" href="{{url('shopper/saved')}}"><i class="fa fa-bookmark w3-margin-right"></i>Đã lưu</a>
-      <a class="w3-button w3-white w3-hide-small"><i class="fa fa-comments w3-margin-right"></i>Nhận xét</a>
+      <a class="w3-button w3-white w3-hide-small" href="{{url('shopper/comment')}}"><i class="fa fa-comments w3-margin-right"></i>Nhận xét</a>
       <a class="w3-button w3-white w3-hide-small"><i class="fa fa-thumbs-up w3-margin-right"></i>Đã thích</a>
       <a class="w3-button w3-white w3-hide-small" href="{{url('shopper/feedback')}}"><i class="fa fa-envelope w3-margin-right"></i>Phản hồi</a>
     </div>

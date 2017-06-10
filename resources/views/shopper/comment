@@ -1,0 +1,49 @@
+                <!-- Respuestas de los comentarios -->
+                <ul class="comments-list reply-list">
+                  <li>
+                    <!-- Avatar -->
+                    <div class="comment-avatar"><img src="http://i9.photobucket.com/albums/a88/creaticode/avatar_2_zps7de12f8b.jpg" alt=""></div>
+                    <!-- Contenedor del Comentario -->
+                    <div class="comment-box">
+                      <div class="comment-head">
+                        <h6 class="comment-name"><a href="http://creaticode.com/blog">Lorena Rojero</a></h6>
+                        <span>hace 10 minutos</span>
+                        <i class="fa fa-reply"></i>
+                        <i class="fa fa-heart"></i>
+                      </div>
+                      <div class="comment-content">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit omnis animi et iure laudantium vitae, praesentium optio, sapiente distinctio illo?
+                      </div>
+                    </div>
+                  </li>
+
+                  <li>
+                    <!-- Avatar -->
+                    <div class="comment-avatar"><img src="http://i9.photobucket.com/albums/a88/creaticode/avatar_1_zps8e1c80cd.jpg" alt=""></div>
+                    <!-- Contenedor del Comentario -->
+                    <div class="comment-box">
+                      <div class="comment-head">
+                        <h6 class="comment-name by-author"><a href="http://creaticode.com/blog">Agustin Ortiz</a></h6>
+                        <span>hace 10 minutos</span>
+                        <i class="fa fa-reply"></i>
+                        <i class="fa fa-heart"></i>
+                      </div>
+                      <div class="comment-content">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit omnis animi et iure laudantium vitae, praesentium optio, sapiente distinctio illo?
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+
+
+
+                $('<?php if(isset(Auth::user()->id)){?><li><div class="comment-main-level"><div class="comment-avatar"><img src="{{ URL::asset('avatar/'.Auth::user()->avatar) }}" alt=""></div><div class="comment-box"><div class="comment-head"><h6 class="comment-name"><a href="http://creaticode.com/blog">{{Auth::user()->name}}</a></h6><i class="fa fa-reply"></i><i class="fa fa-heart"></i></div><div class="comment-content"><form id="form" action="{{url('post/edit_comment_post/'.'+id_comment+')}}" method="POST">{!! csrf_field() !!}<input type="text" name="id_user" value="{{Auth::user()->id}}" hidden=""><textarea style="height: 80px; margin-bottom: 15px; margin-top: 15px;" class="form-control" name="editContent">'+content+'</textarea></form><button class="btn btn-success" onclick="editComment();">Bình luận</button></div></div></div></li><?php }?>').appendTo(div2);
+
+
+
+                var div = a_tag.parentNode.parentNode;
+  var divs = div.getElementsByTagName("div");
+  var content = divs[1].innerHTML;
+  $(div[1]).remove();
+  
+  $('<div class="comment-content"><form id="formEdit" action="{{url('post/edit_comment_post/'.'+id_comment+')}}" method="POST">{!! csrf_field() !!}<input type="text" name="id_user" value="{{Auth::user()->id}}" hidden=""><textarea style="height: 80px; margin-bottom: 15px; margin-top: 15px;" class="form-control" name="editContent">'+content+'</textarea></form><button class="btn btn-success" onclick="editComment();">Chỉnh sửa</button></div>').appendTo(div);

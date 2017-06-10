@@ -75,6 +75,7 @@
       
     </tr>
   </table>
+  <?php if($shipper != null){ ?>
   <h3>Người ship</h3>
     <table class="data table table-striped no-margin">
       <thead>
@@ -86,14 +87,15 @@
           <th>Giờ làm việc</th>
         </tr>
       </thead>
-      <tr class="w3-hover-green" style="line-height: 27px;" id="{{$index}}">
+      <tr class="w3-hover-green" style="line-height: 27px;" >
         <td>{{$shipper->name}}</td>
         <td>{{$shipper->email}}</td>
         <td>{{$shipper->address}}</td>
         <td>{{$shipper->phone_number}}</td>
-        <td id="{{$order->id}}">{{$shipper->gio_giao_hang}}</td>
+        <td>{{$shipper->gio_giao_hang}}</td>
       </tr>
     </table>
+    <?php } ?>
   </div>
 
   <div id="map"></div>

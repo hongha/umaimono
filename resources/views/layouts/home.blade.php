@@ -7,6 +7,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="{{ URL::asset('public/css/w3.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('public/css/comment.css') }}">
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
 <link rel="stylesheet" href="{{ URL::asset('public/font-awesome/css/font-awesome.min.css') }}" />
 <script src="{{ URL::asset('public/js/jquery.min.js') }}"></script>
@@ -22,13 +23,16 @@
 <script src="{{ URL::asset('public/js/workaround.min.js') }}"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{ URL::asset('public/css/jquery-ui.css') }}">
+<script src="{{ URL::asset('public/js/jquery-ui.js') }}"></script>
 <style>
 html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 </style>
 <body class="w3-theme-l5">
 <!-- Navbar -->
 
-
+<?php use App\RestaurantProfile;
+use Illuminate\Support\Facades\DB; ?>
 <nav class="navbar navbar-default" role="navigation">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -45,39 +49,113 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="dropdown-thumbnail-preview">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Link</a></li>
-        <li><a href="#">Link</a></li>
+        <li><a href="#">Đặt giao hàng</a></li>
+        <li><a href="#">Đặt bàn</a></li>
+        <li><a href="#">Du lịch</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Trợ giúp</a></li>
       </ul>
       <form class="navbar-form navbar-left" role="search">
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Search">
         </div>
-        <button type="submit" class="btn btn-default">Submit</button>
+        <button type="submit" class="btn btn-default">Tìm kiếm</button>
       </form>
       <ul class="nav navbar-nav" style="top: 0 !important; position: relative; float: right; margin-right: -15px;">
         <li class="dropdown">
         <?php 
-          if(isset(Auth::user()->name)){?>
-          <a class="dropdown-toggle" data-toggle="dropdown" style="float: right;"><span><?php
-            echo Auth::user()->name;
-            ?> </span><img src="{{ URL::asset('avatar/'.Auth::user()->avatar) }}" class="w3-circle" style="height:25px;width:25px;margin-left: 5px;" alt="Avatar"></a>
-          <?php
+          if(isset(Auth::user()->name)){ 
+            switch (Auth::user()->role) {
+              case 0:?>
+
+                <a class="dropdown-toggle" data-toggle="dropdown" style="float: right;"><span><?php
+                echo Auth::user()->name;?> 
+                </span><img src="{{ URL::asset('avatar/'.Auth::user()->avatar) }}" class="w3-circle" style="height:25px;width:25px;margin-left: 5px;" alt="Avatar"></a>
+                <ul class="dropdown-menu">
+                  <li><a href="{{url('shopper/index')}}">Cập nhật tài khoản <span class="glyphicon glyphicon-cog pull-right"></span></a></li>
+                  <li class="divider"></li>
+                  <li><a href="{{url('shopper/index')}}">Lịch sử đơn hàng <span class="glyphicon glyphicon-stats pull-right"></span></a></li>
+                  <li class="divider"></li>
+                  <li><a href="{{url('shopper/saved')}}">Lưu trữ <span class="fa fa-bookmark pull-right"></span></a></li>
+                  <li class="divider"></li>
+                  <li><a href="{{url('shopper/comment')}}">Nhận xét <span class="glyphicon glyphicon-heart pull-right"></span></a></li>
+                  <li class="divider"></li>
+                  <li><a href="{{url('shopper/like')}}">Đã thích <span class="fa fa-thumbs-up pull-right"></span></a></li>
+                  <li class="divider"></li>
+                  <li><a href="{{url('shopper/feedback')}}">Phản hồi <span class="fa fa-envelope pull-right"></span></a></li>
+                  <li class="divider"></li>
+                  <li><a href="{{url('logout')}}">Thoát <span class="glyphicon glyphicon-log-out pull-right"></span></a></li>
+                </ul>
+
+              <?php  break;
+              case 1:?>
+                  <a class="dropdown-toggle" data-toggle="dropdown" style="float: right;"><span><?php
+                  echo Auth::user()->name?>
+                   
+                  </span><img src="{{ URL::asset('avatar/'.Auth::user()->avatar) }}" class="w3-circle" style="height:25px;width:25px;margin-left: 5px;" alt="Avatar"></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="{{url('shipper/edit_profile')}}">Cập nhật tài khoản <span class="glyphicon glyphicon-cog pull-right"></span></a></li>
+                    <li class="divider"></li>
+                    <li><a href="{{url('shipper/index')}}">Lịch sử đơn hàng <span class="glyphicon glyphicon-stats pull-right"></span></a></li>
+                    <li class="divider"></li>
+                    <li><a href="{{url('shipper/index')}}">Hoạt động <span class="glyphicon glyphicon-heart pull-right"></span></a></li>
+                    <li class="divider"></li>
+                    <li><a href="{{url('logout')}}">Thoát <span class="glyphicon glyphicon-log-out pull-right"></span></a></li>
+                  </ul>
+
+              <?php
+                break;
+                case 3:?>
+                  <a class="dropdown-toggle" data-toggle="dropdown" style="float: right;"><span><?php
+                  echo Auth::user()->name;
+                  ?> </span><img src="{{ URL::asset('avatar/'.Auth::user()->avatar) }}" class="w3-circle" style="height:25px;width:25px;margin-left: 5px;" alt="Avatar"></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="{{url('restaurant/index')}}">Cập nhật tài khoản <span class="glyphicon glyphicon-cog pull-right"></span></a></li>
+                    <li class="divider"></li>
+                    <li><a href="{{url('restaurant/index')}}">Lịch sử đơn hàng <span class="glyphicon glyphicon-stats pull-right"></span></a></li>
+                    <li class="divider"></li>
+                    <li><a href="{{url('logout')}}">Thoát <span class="glyphicon glyphicon-log-out pull-right"></span></a></li>
+                  </ul>
+              <?php
+                  break;
+                  case 5:?>
+
+                    <a class="dropdown-toggle" data-toggle="dropdown" style="float: right;"><span>Admins</span><img src="{{ URL::asset('avatar/'.Auth::user()->avatar) }}" class="w3-circle" style="height:25px;width:25px;margin-left: 5px;" alt="Avatar"></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="{{url('admin/index')}}">Cập nhật tài khoản <span class="glyphicon glyphicon-cog pull-right"></span></a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{url('shopper/index')}}">Hoạt động <span class="glyphicon glyphicon-heart pull-right"></span></a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{url('logout')}}">Thoát <span class="glyphicon glyphicon-log-out pull-right"></span></a></li>
+                    </ul>
+
+              <?php
+              break;
+              ?>
+              
+              <?php default:?>
+
+                    <a class="dropdown-toggle" data-toggle="dropdown" style="float: right;"><span><?php echo Auth::user()->name; ?></span><img src="{{ URL::asset('avatar/'.Auth::user()->avatar) }}" class="w3-circle" style="height:25px;width:25px;margin-left: 5px;" alt="Avatar"></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="{{url('shopper/index')}}">Cập nhật tài khoản <span class="glyphicon glyphicon-cog pull-right"></span></a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{url('shopper/index')}}">Lịch sử đơn hàng <span class="glyphicon glyphicon-stats pull-right"></span></a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{url('shopper/index')}}">Lưu trữ <span class="badge pull-right"> 42 </span></a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{url('shopper/index')}}">Hoạt động <span class="glyphicon glyphicon-heart pull-right"></span></a></li>
+                      <li class="divider"></li>
+                      <li><a href="{{url('logout')}}">Thoát <span class="glyphicon glyphicon-log-out pull-right"></span></a></li>
+                    </ul>
+               <?php 
+                break;
+            }
           }else{ ?>
             <a href="{{url('login')}}" style="float: right;">Login/Register</a>
           <?php
           }
         ?>
-          <ul class="dropdown-menu">
-            <li><a href="{{url('shopper/index')}}">Cập nhật tài khoản <span class="glyphicon glyphicon-cog pull-right"></span></a></li>
-            <li class="divider"></li>
-            <li><a href="{{url('shopper/index')}}">Lịch sử đơn hàng <span class="glyphicon glyphicon-stats pull-right"></span></a></li>
-            <li class="divider"></li>
-            <li><a href="{{url('shopper/index')}}">Lưu trữ <span class="badge pull-right"> 42 </span></a></li>
-            <li class="divider"></li>
-            <li><a href="{{url('shopper/index')}}">Hoạt động <span class="glyphicon glyphicon-heart pull-right"></span></a></li>
-            <li class="divider"></li>
-            <li><a href="{{url('logout')}}">Thoát <span class="glyphicon glyphicon-log-out pull-right"></span></a></li>
-          </ul>
+          
         </li>
       </ul>
       

@@ -1,4 +1,4 @@
-@extends('layouts.postViewTemplate')
+@extends('layouts.home')
 @section('title')
     Đặt hàng - @parent
 @stop
@@ -45,7 +45,7 @@
     <!-- Middle Column -->
     <div class="w3-col m7">
       <div class="w3-container w3-card-2 w3-white w3-round margin-left-right-16">
-      <form action="{{url('post/order')}}" method="post">
+      <form action="{{url('post/order/'.$id)}}" method="post">
       {{ csrf_field() }}
         <div style="width: 100%; height: 420px; padding-top: 15px; margin-bottom: 15px;">
             <input id="pac-input" class="controls" type="text" placeholder="Địa chỉ nhận hàng" name="address" required="" value="" >
@@ -132,7 +132,7 @@
             <span class="float-left font16 bold700">Tạm tính</span>
             <span class="font16 float-right bold700 txt-blue" id="money_Temporarily">{{$price_total}}đ</span>
           </div>
-          <a href="javascript:void(0)" class="btn-book-first after-lick" onclick="checkout()">
+          <a href="javascript:void(0)" class="btn-book-first after-lick" onclick="checkout({{$id}})">
           <i class="fa fa-check-circle"></i>
           Đặt trước</a>
         </div>
@@ -277,7 +277,7 @@ function calculateRoute(newMarker,marker,restaurant_name,address,checkLastRes){
           var toltalMoneySpan = document.getElementById("money_total");
           var toltalMoney = parseInt(toltalMoneySpan.innerHTML,10);
           toltalMoney = toltalMoney + toltal;
-          $('<div style="width: 100%;"><span class="font14 bold700 w3-white">Tổng tiền ship: </span><span class="font14 txt-red">'+toltal+'đ</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="font14 bold700 w3-white">Tổng tiền cần thanh toán: </span><span class="font16 txt-red bold700">'+toltalMoney+'đ</span><input name="tong_ship" style="display:none;" value="'+toltal+'"><input name="tong_thanh_toan" style="display:none;" value="'+toltalMoney+'"><div>').appendTo( "#distance" );
+          $('<div style="width: 100%;"><span class="font14 bold700 w3-white">Tổng tiền cần thanh toán: </span><span class="font16 txt-red bold700">'+toltalMoney+'đ</span><input name="tong_ship" style="display:none;" value="'+toltal+'"><input name="tong_thanh_toan" style="display:none;" value="'+toltalMoney+'"><div>').appendTo( "#distance" );
         }
       };
     };
@@ -457,12 +457,12 @@ function reset_menu(){
     }
 });
 }}
-function checkout(){
+function checkout(id){
   var data =<?php echo json_encode($shopping_carts, JSON_FORCE_OBJECT) ?>;
   if(!data){
     window.location.href = "http://localhost/umaimono/login";
   }else{
-    window.location.href = "http://localhost/umaimono/post/buy";
+    window.location.href = 'http://localhost/umaimono/post/buy/'+id;
   }
   
 }

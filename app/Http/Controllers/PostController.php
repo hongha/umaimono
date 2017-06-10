@@ -16,6 +16,8 @@ use App\User;
 use App\Order;
 use App\Receipt;
 use App\ShoppingCart;
+use App\CommentPost;
+use App\CommentFood;
 use App\RestaurantProfile;
 use Illuminate\Support\Collection;
 class PostController extends Controller
@@ -115,6 +117,7 @@ class PostController extends Controller
         $saved_posts = DB::table('saved_posts')->where('id_user','=',Auth::user()->id)->where('delete_flg','=',0)->pluck('id_post'); 
         $liked_posts = DB::table('like_posts')->where('id_user','=',Auth::user()->id)->where('delete_flg','=',0)->pluck('id_post'); 
         }
+        $comment_posts = CommentPost::where('id_post',$id)->where('delete_flg','!=',1)->get();
         if($id == null){
             return redirect()->back();
         }else{
@@ -126,25 +129,21 @@ class PostController extends Controller
             $foods = Food::where('id_restaurant', $post->user_id)->where('delete_flg','!=',1)->orderBy('ordered','DESC')->get();
             $posts = Post::where('user_id', $post->user_id)->where('delete_flg','!=',1)->orderBy('updated_at','DESC')->limit(10)->get();
             $restaurant_info = DB::table('restaurant_profiles')->where('id_restaurant','=', $user->id)->get();
-            // $str = explode(' ', $post->title);
-            // for($i=0;$i<count($str);$i++){
-            //    $arr_foods[$i] = Food::where('name', 'LIKE', "%$str[$i]%")->where('delete_flg','!=',1)->orderBy('ordered','DESC')->get();
-            // }
             $like_nhieus = Food::where('id_restaurant', $post->user_id)->orderBy('likes','DESC')->limit(10)->get(); 
             $luu_nhieus = Food::where('id_restaurant', $post->user_id)->orderBy('saveds','DESC')->limit(10)->get(); 
             if($post->delete_flg == 1){
                 return view('errors.404');
             }else{
                 if (Auth::check()) {                 
-                    $shopping_carts = DB::table('shopping_carts')->where('id_user','=', Auth::user()->id)->get();
+                    $shopping_carts = DB::table('shopping_carts')->where('id_user','=', Auth::user()->id)->where('id_restaurant',$post->user_id)->get();
                     foreach ($shopping_carts as $shopping_cart) {
                         $number_total = $number_total + $shopping_cart->number;
                         $price_total = $price_total + $shopping_cart->price*$shopping_cart->number;
                     }
-                        return view('post.view', compact('post','user','shopping_carts','number_total','price_total','restaurant_info','foods','posts','like_nhieus','saved_foods','saved_posts','liked_posts','luu_nhieus'));
+                        return view('post.view', compact('post','user','shopping_carts','number_total','price_total','restaurant_info','foods','posts','like_nhieus','saved_foods','saved_posts','liked_posts','luu_nhieus','comment_posts'));
                     }else{
                         $shopping_carts = null;
-                        return view('post.view', compact('post','user','shopping_carts','number_total','price_total','restaurant_info','foods','posts','like_nhieus','saved_foods','saved_posts','liked_posts','luu_nhieus'));
+                        return view('post.view', compact('post','user','shopping_carts','number_total','price_total','restaurant_info','foods','posts','like_nhieus','saved_foods','saved_posts','liked_posts','luu_nhieus','comment_posts'));
                 } 
             }
         }
@@ -200,9 +199,9 @@ class PostController extends Controller
         }
         return response()->json($arr_restau);
     }
-    public function reset_menu(){
+    public function reset_menu($id = null){
         if(Auth::check()){
-            $shopping_cart = DB::table('shopping_carts')->where('id_user','=', Auth::user()->id)->delete();
+            $shopping_cart = DB::table('shopping_carts')->where('id_user','=', Auth::user()->id)->where('id_restaurant',$id)->delete();
             return response()->json($shopping_cart);
         }else{
           return  redirect('login'); 
@@ -210,7 +209,8 @@ class PostController extends Controller
     }
     public function them_hang($id_food){
         $food = Food::find($id_food);
-        $shopping_carts = ShoppingCart::where('id_user', Auth::user()->id)->get();
+        $id = $food->id_restaurant;
+        $shopping_carts = ShoppingCart::where('id_user', Auth::user()->id)->where('id_restaurant',$food->id_restaurant)->get();
         $change_item = '';
         $number_total = 0;
         $price_total = 0;
@@ -231,19 +231,20 @@ class PostController extends Controller
             $shopping_cart->number = 1;
             $shopping_cart->save();
         } 
-        $shopping_carts = ShoppingCart::where('id_user', Auth::user()->id)->get();
+        $shopping_carts = ShoppingCart::where('id_user', Auth::user()->id)->where('id_restaurant',$food->id_restaurant)->get();
         foreach ($shopping_carts as $shopping_cart) {
             $number_total = $number_total + $shopping_cart->number;
             $price_total = $price_total + $shopping_cart->price*$shopping_cart->number;
         }
-        return view('post.shoppingCart', compact('shopping_carts', 'number_total', 'price_total'));               
+        return view('post.shoppingCart', compact('shopping_carts', 'number_total', 'price_total','id'));               
     }
     public function them_hang_buy($id_food){
         $i=0;$j=0;
         $arr_res[] = '';
         $arr_restau[] = '';
         $food = Food::find($id_food);
-        $shopping_carts = ShoppingCart::where('id_user', Auth::user()->id)->get();
+        $id = $food->id_restaurant;
+        $shopping_carts = ShoppingCart::where('id_user', Auth::user()->id)->where('id_restaurant',$food->id_restaurant)->get();
         $change_item = '';
         $number_total = 0;
         $price_total = 0;
@@ -282,7 +283,7 @@ class PostController extends Controller
             $arr_restau[$j] = RestaurantProfile::where('id_restaurant',$res)->get();
             $j++;
         }
-        return view('post.shoppingCartBuy', compact('shopping_carts', 'number_total', 'price_total','arr_restau'));               
+        return view('post.shoppingCartBuy', compact('shopping_carts', 'number_total', 'price_total','arr_restau','id'));               
     }
     public function view_food($id){
         $saved_foods = '';
@@ -291,6 +292,8 @@ class PostController extends Controller
         $saved_foods = DB::table('saved_foods')->where('id_user','=',Auth::user()->id)->where('delete_flg','=',0)->pluck('id_food');
         $liked_foods = DB::table('like_foods')->where('id_user','=',Auth::user()->id)->where('delete_flg','=',0)->pluck('id_food');
         }
+        $comment_foods = CommentFood::where('id_food',$id)->where('delete_flg','!=',1)->get();
+        // dd($comment_foods);
        if($id == null){
             return redirect()->back();
         }else{
@@ -312,20 +315,20 @@ class PostController extends Controller
                 return view('errors.404');
             }else{
                 if (Auth::check()) {                 
-                    $shopping_carts = DB::table('shopping_carts')->where('id_user','=', Auth::user()->id)->get();
+                    $shopping_carts = DB::table('shopping_carts')->where('id_user','=', Auth::user()->id)->where('id_restaurant',$food->id_restaurant)->get();
                     foreach ($shopping_carts as $shopping_cart) {
                         $number_total = $number_total + $shopping_cart->number;
                         $price_total = $price_total + $shopping_cart->price*$shopping_cart->number;
                     }
-                        return view('post.view_food', compact('food','user','shopping_carts','number_total','price_total','restaurant_info','foods','posts','like_nhieus','saved_foods','liked_foods','luu_nhieus'));
+                        return view('post.view_food', compact('food','user','shopping_carts','number_total','price_total','restaurant_info','foods','posts','like_nhieus','saved_foods','liked_foods','luu_nhieus','comment_foods'));
                     }else{
                         $shopping_carts = null;
-                        return view('post.view_food', compact('food','user','shopping_carts','number_total','price_total','restaurant_info','foods','posts','like_nhieus','saved_foods','liked_foods','luu_nhieus'));
+                        return view('post.view_food', compact('food','user','shopping_carts','number_total','price_total','restaurant_info','foods','posts','like_nhieus','saved_foods','liked_foods','luu_nhieus','comment_foods'));
                 } 
             }
         } 
     }
-    public function buy(){
+    public function buy($id =null){
         $i=0;$j=0;
         $arr_res[] = '';
         $number_total = 0;
@@ -334,7 +337,7 @@ class PostController extends Controller
             $food_types = DB::table('food_type_details')->get();
             $foods = Food::where('delete_flg','!=',1)->orderBy('updated_at','desc')->limit(10)->get();
             $posts = Post::where('delete_flg','!=',1)->orderBy('updated_at','desc')->limit(6)->get();
-            $shopping_carts = DB::table('shopping_carts')->where('id_user','=', Auth::user()->id)->get();
+            $shopping_carts = DB::table('shopping_carts')->where('id_user','=', Auth::user()->id)->where('id_restaurant',$id)->get();
             foreach ($shopping_carts as $shopping_cart) {
                 $number_total = $number_total + $shopping_cart->number;
                 $price_total = $price_total + $shopping_cart->price*$shopping_cart->number;
@@ -352,12 +355,12 @@ class PostController extends Controller
                 $arr_res[$j] = RestaurantProfile::where('id_restaurant',$res)->get();
                 $j++;
             }
-                return view('post.buy', compact('shopping_carts','number_total','price_total','foods','posts','food_types','arr_res'));
+                return view('post.buy', compact('shopping_carts','number_total','price_total','foods','posts','food_types','arr_res','id'));
             }else{
                 return view('login');
         } 
     }
-    public function order(Request $request){
+    public function order($id = null, Request $request){
         $i = 0;
         $receipt = new Receipt;
         $receipt->id_user = Auth::user()->id;
@@ -372,7 +375,7 @@ class PostController extends Controller
         $receipt->receive_hour = $request->receive_hour;
         $receipt->ghi_chu = $request->ghi_chu;
         $receipt->save();
-        $shopping_carts = ShoppingCart::where('id_user',Auth::user()->id)->get();
+        $shopping_carts = ShoppingCart::where('id_user',Auth::user()->id)->where('id_restaurant',$id)->get();
         foreach ($shopping_carts as $shopping_cart) {
             if($i == 0){
                 $id_restaurant = $shopping_cart->id_restaurant;
@@ -397,5 +400,104 @@ class PostController extends Controller
         $receipt->save();
         return redirect('/');
     }
-
+    public function create_comment_post($id_post = null, Request $request){
+        $comment_post = new CommentPost;
+        $comment_post->id_user = $request->id_user;
+        $comment_post->id_post = $id_post;
+        $comment_post->content = $request->content;
+        $comment_post->save();
+        $post = Post::find($id_post);
+        $post->comments = $post->comments + 1;
+        $post->save();
+        return response()->json($comment_post);
+    }
+    public function delete_comment_post($id_comment = null){
+        $comment_post = CommentPost::find($id_comment);
+        if($comment_post->id_user == Auth::user()->id){
+            $comment_post->delete_flg = 1;
+            $comment_post->save();
+            return response()->json($comment_post);
+        }else{
+            return view('errors.503'); 
+        }
+    }
+    public function edit_comment_post($id_comment = null, Request $request){
+        $comment_post = CommentPost::find($id_comment);
+        if($comment_post->id_user == Auth::user()->id){
+            $comment_post->content = $request->editContent;
+            $comment_post->save();
+            return view('post.edit_comment_post', compact('comment_post'));
+        }else{
+            return view('errors.503'); 
+        }
+    }
+    public function getResFoods($id_restaurant = null){
+        $res_foods = Food::where('id_restaurant',$id_restaurant)->where('delete_flg','!=',1)->limit(3)->get();
+        return response()->json($res_foods);
+    }
+    public function view_restaurant($id_restaurant = null){
+         $saved_foods = '';
+        $saved_posts = '';
+        $liked_posts = '';
+        if(isset(Auth::user()->id)){
+        $saved_foods = DB::table('saved_foods')->where('id_user','=',Auth::user()->id)->where('delete_flg','=',0)->pluck('id_food');
+        $saved_posts = DB::table('saved_posts')->where('id_user','=',Auth::user()->id)->where('delete_flg','=',0)->pluck('id_post'); 
+        $liked_posts = DB::table('like_posts')->where('id_user','=',Auth::user()->id)->where('delete_flg','=',0)->pluck('id_post'); 
+        }
+        if($id_restaurant == null){
+            return redirect()->back();
+        }else{
+            // $arr_foods[] = '';
+            $user = User::find($id_restaurant);
+            $number_total = 0;
+            $price_total = 0;
+            $foods = Food::where('id_restaurant', $id_restaurant)->where('delete_flg','!=',1)->orderBy('ordered','DESC')->get();
+            $posts = Post::where('user_id', $id_restaurant)->where('delete_flg','!=',1)->orderBy('updated_at','DESC')->limit(10)->get();
+            $restaurant_info = DB::table('restaurant_profiles')->where('id_restaurant','=', $id_restaurant)->get();
+            $like_nhieus = Food::where('id_restaurant', $id_restaurant)->orderBy('likes','DESC')->limit(10)->get(); 
+            $luu_nhieus = Food::where('id_restaurant', $id_restaurant)->orderBy('saveds','DESC')->limit(10)->get(); 
+            if (Auth::check()) {                 
+                $shopping_carts = DB::table('shopping_carts')->where('id_user','=', Auth::user()->id)->where('id_restaurant',$id_restaurant)->get();
+                foreach ($shopping_carts as $shopping_cart) {
+                    $number_total = $number_total + $shopping_cart->number;
+                    $price_total = $price_total + $shopping_cart->price*$shopping_cart->number;
+                }
+                    return view('post.view_restaurant', compact('user','shopping_carts','number_total','price_total','restaurant_info','foods','posts','like_nhieus','saved_foods','saved_posts','liked_posts','luu_nhieus','comment_posts'));
+                }else{
+                    $shopping_carts = null;
+                    return view('post.view_restaurant', compact('user','shopping_carts','number_total','price_total','restaurant_info','foods','posts','like_nhieus','saved_foods','saved_posts','liked_posts','luu_nhieus','comment_posts'));
+            } 
+        }
+    }
+    public function create_comment_food($id_food = null, Request $request){
+        $comment_food = new CommentFood;
+        $comment_food->id_user = $request->id_user;
+        $comment_food->id_food = $id_food;
+        $comment_food->content = $request->content;
+        $comment_food->save();
+        $food = Food::find($id_food);
+        $food->comments = $food->comments + 1;
+        $food->save();
+        return response()->json($comment_food);
+    }
+    public function delete_comment_food($id_comment = null){
+        $comment_food = CommentFood::find($id_comment);
+        if($comment_food->id_user == Auth::user()->id){
+            $comment_food->delete_flg = 1;
+            $comment_food->save();
+            return response()->json($comment_food);
+        }else{
+            return view('errors.503'); 
+        }
+    }
+    public function edit_comment_food($id_comment = null, Request $request){
+        $comment_food = CommentFood::find($id_comment);
+        if($comment_food->id_user == Auth::user()->id){
+            $comment_food->content = $request->editContent;
+            $comment_food->save();
+            return view('post.edit_comment_food', compact('comment_food'));
+        }else{
+            return view('errors.503'); 
+        }
+    }
 }

@@ -16,8 +16,7 @@
 }
 </style>
 <?php use Illuminate\Support\Facades\DB; ?>
-<script type="text/javascript" language="javascript" src="{{ URL::asset('ckeditor/ckeditor.js') }}" ></script>
-<script type="text/javascript" language="javascript" src="{{ URL::asset('ckfinder/ckfinder.js') }}" ></script>
+
 <div class="right_col" role="main">
   <div class="">
     <div class="page-title">
@@ -203,6 +202,9 @@
                           <th>Số lần đặt</th>
                           <th>Món ăn</th>
                           <th>Avatar</th>
+                          <th>Lượt thích</th>
+                          <th>Lượt lưu</th>
+                          <th>Lượt nhận xét</th>
                           <th class="hidden-phone">Giá</th>
                           <th>Thao tác</th>
                         </tr>
@@ -216,6 +218,9 @@
                           <td>
                             <img class="avatar_manage_page" src="../post/food_img/<?php echo $food->avatar;?>" alt="{{$food->name}}">
                           </td>
+                          <td>{{$food->likes}}</td>
+                          <td>{{$food->saveds}}</td>
+                          <td>{{$food->comments}}</td>
                           <td class="hidden-phone">{{$food->price}} đ</td>
                           <td class="vertical-align-mid">
                             <a class="glyphicon glyphicon-pencil btn-warning btn" onclick="edit_food({{$food->id}});" data-toggle="modal" data-target="#myModal-foods-edit" ></a>
@@ -237,6 +242,9 @@
                           <th>Lượt xem</th>
                           <th>Bài đăng</th>
                           <th>Avatar</th>
+                          <th>Lượt thích</th>
+                          <th>Lượt lưu</th>
+                          <th>Lượt nhận xét</th>
                           <th class="hidden-phone">Ngày sửa cuối</th>
                           <th>Thao tác</th>
                         </tr>
@@ -250,6 +258,9 @@
                           <td>
                             <img class="avatar_manage_page" src="../post/avatar/{{$post->avatar}}" alt="{{$post->name}}">
                           </td>
+                          <td>{{$post->likes}}</td>
+                          <td>{{$post->saveds}}</td>
+                          <td>{{$post->comments}}</td>
                           <td class="hidden-phone">{{$post->updated_at}}</td>
                           <td class="vertical-align-mid">
                             <a class="glyphicon glyphicon-pencil btn-warning btn" onclick="edit_post({{$post->id}});" data-toggle="modal" data-target="#myModal-posts-edit" ></a>
@@ -544,6 +555,8 @@
     </div>
   </div>
 </div>
+<script type="text/javascript" language="javascript" src="{{ URL::asset('ckeditor/ckeditor.js') }}" ></script>
+<script type="text/javascript" language="javascript" src="{{ URL::asset('ckfinder/ckfinder.js') }}" ></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMOaA3Yy3TAZgJwoyjuO7YiVbVa5Ye0Hc&callback=initMap&libraries=places"
     async defer>
 </script>
