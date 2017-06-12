@@ -55,9 +55,9 @@ use Illuminate\Support\Facades\DB; ?>
         <li><a href="#">Blog</a></li>
         <li><a href="#">Trợ giúp</a></li>
       </ul>
-      <form class="navbar-form navbar-left" role="search">
+      <form class="navbar-form navbar-left" role="search" action="{{url('search')}}">
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="Search">
+          <input type="text" name="search" class="form-control" placeholder="Search">
         </div>
         <button type="submit" class="btn btn-default">Tìm kiếm</button>
       </form>

@@ -214,7 +214,7 @@ use Illuminate\Support\Facades\DB;
           <div class="w3-white" style="padding-bottom: 15px;">
           <a href="{{url('post/view_food/'.$food->id)}}"><p style="font-size: 16px; margin-left: 15px; padding: 0px; line-height: 1.3em; font-weight: bold; margin-top: 5px; color: black;">{{$food->name}}</p></a>
           <p class="txt-blue font16 bold" style="margin-left: 15px;">{{$food->price}} đ</p>
-          <a href="{{url('post/view_restaurant/'.$restaurant->id)}}"><p style="margin-left: 15px; color: #c1e3a1; font-size: 14px;"><?php 
+          <a href="{{url('post/view_restaurant/'.$restaurant->id_restaurant)}}"><p style="margin-left: 15px; color: #c1e3a1; font-size: 14px;"><?php 
              echo $restaurant->restaurant_name;
            ?></p></a>
           <p style="margin-left: 15px; color: #a1a1a1; font-size: 14px;"><?php echo $restaurant->address ?></p>

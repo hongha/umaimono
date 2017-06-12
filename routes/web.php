@@ -2,6 +2,7 @@
 Route::get('/','HomeController@index');
 Route::get('logout', 'LoginController@getLogout');
 Route::get('homepage', 'HomeController@homepage');
+Route::get('search', 'HomeController@search');
 Route::get('userProfile', 'HomeController@userProfile');
 Route::get('restaurant', 'RestaurantController@index');
 Route::get('index', 'HomeController@index');
@@ -67,6 +68,12 @@ Route::group(['prefix' => 'shopper', 'middleware' => 'shopper'], function () {
     Route::post('delete_receipt/{id}', 'UserController@delete_receipt');
     Route::get('comment', 'UserController@comment');
     Route::post('comment', 'UserController@comment');
+    Route::post('edit_comment_food', 'UserController@edit_comment_food');
+    Route::post('delete_comment_food/{id}', 'UserController@delete_comment_food');
+    Route::post('edit_comment_post', 'UserController@edit_comment_post');
+    Route::post('delete_comment_post/{id}', 'UserController@delete_comment_post');
+    Route::get('like', 'UserController@like');
+    Route::post('like', 'UserController@like');
 });
 Route::group(['prefix' => 'post'], function () {
     Route::get('index', 'PostController@index');

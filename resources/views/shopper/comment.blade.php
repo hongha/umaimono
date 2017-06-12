@@ -97,8 +97,8 @@ use App\CommentFood;?>
           <td>{{$comment_food->updated_at}}</td>
           <td>
             <a href="{{url('post/view_food/'.$food->id)}}" class="glyphicon glyphicon-eye-open btn btn-success" style="font-size: 10px;" target="_blank"></a>
-            <a href="javascript:void(0)" onclick="edit_comment_food({{$comment_food->id}},{{$food->id}},this)" class="glyphicon glyphicon-pencil btn-warning btn" style="font-size: 10px;" data-toggle="modal" data-target="#modal-edit-receipt" ></a>
-            <a href="javascript:void(0)" onclick="delete_receipt(this)" class="glyphicon glyphicon-trash btn btn-danger" style="font-size: 10px;"></a>    
+            <a href="javascript:void(0)" onclick="edit_comment({{$comment_food->id}},'/umaimono/shopper/edit_comment_food','{{$comment_food->content}}',this)" class="glyphicon glyphicon-pencil btn-warning btn" style="font-size: 10px;" data-toggle="modal" data-target="#modal-edit-comment" ></a>
+            <a href="javascript:void(0)" onclick="delete_comment({{$comment_food->id}},'/umaimono/shopper/delete_comment_food/',this)" class="glyphicon glyphicon-trash btn btn-danger" style="font-size: 10px;"></a>    
           </td>
         </tr>
         @endforeach
@@ -119,9 +119,8 @@ use App\CommentFood;?>
           <img src="../../umaimono/post/avatar/{{$food->avatar}}" alt="" style="height: auto; width: 100%; border-radius: 2px 2px 0 0;">
           </div>
           <div class="w3-white" style="padding-bottom: 15px;">
-          <a href="{{url('post/view_food/'.$food->id)}}"><p style="font-size: 16px; margin-left: 15px; padding: 0px; line-height: 1.3em; font-weight: bold; margin-top: 5px; color: black;">{{$food->name}}</p></a>
-          <p class="txt-blue font16 bold" style="margin-left: 15px;">{{$food->price}} đ</p>
-          <p style="margin-left: 15px; color: #a1a1a1; font-size: 14px;"><?php $restaurants = RestaurantProfile::where('id_restaurant',$food->id_restaurant)->get(); foreach ($restaurants as $restaurant) {
+          <a href="{{url('post/view_food/'.$food->id)}}"><p style="font-size: 16px; margin-left: 15px; padding: 0px; line-height: 1.3em; font-weight: bold; margin-top: 5px; color: black;">{{$food->title}}</p></a>
+          <p style="margin-left: 15px; color: #a1a1a1; font-size: 14px;"><?php $restaurants = RestaurantProfile::where('id_restaurant',$food->user_id)->get(); foreach ($restaurants as $restaurant) {
              echo $restaurant->address;
           } ?></p>
           <a href="javascript:void(0)" style="margin-left: 15px;"><i class="fa fa-bookmark"></i></a>&nbsp;<span>{{$food->saveds}}</span>
@@ -147,8 +146,8 @@ use App\CommentFood;?>
           <td>{{$comment_food->updated_at}}</td>
           <td>
             <a href="{{url('post/view/'.$food->id)}}" class="glyphicon glyphicon-eye-open btn btn-success" style="font-size: 10px;" target="_blank"></a>
-            <a href="javascript:void(0)" onclick="edit_comment({{}})" class="glyphicon glyphicon-pencil btn-warning btn" style="font-size: 10px;" data-toggle="modal" data-target="#modal-edit-receipt" ></a>
-            <a href="javascript:void(0)" onclick="delete_receipt(this)" class="glyphicon glyphicon-trash btn btn-danger" style="font-size: 10px;"></a>    
+            <a href="javascript:void(0)" onclick="edit_comment({{$comment_food->id}},'/umaimono/shopper/edit_comment_post','{{$comment_food->content}}',this)" class="glyphicon glyphicon-pencil btn-warning btn" style="font-size: 10px;" data-toggle="modal" data-target="#modal-edit-comment" ></a>
+            <a href="javascript:void(0)" onclick="delete_comment({{$comment_food->id}},'/umaimono/shopper/delete_comment_post/',this)" class="glyphicon glyphicon-trash btn btn-danger" style="font-size: 10px;"></a>    
           </td>
         </tr>
         @endforeach
@@ -157,60 +156,58 @@ use App\CommentFood;?>
     </div>
     @endforeach
   </div>
-  <div id="modal-edit-food" class="modal fade" role="dialog">
+  <div id="modal-edit-comment" class="modal fade" role="dialog">
   <div class="modal-dialog">
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Sửa thông tin đơn hàng</h4>
+        <h4 class="modal-title">Sửa nhận xét</h4>
       </div>
+      <form action="" method="post" id="edit_comment">
       <div class="modal-body class="form-group"">
-        <form action="{{url('shopper/edit_order_food')}}" method="post" id="edit_order_food">
         {{ csrf_field() }}
         <center>
-         <div class="input-group">
-          <span class="input-group-btn">
-              <button type="button" class="btn btn-danger btn-number"  data-type="minus" data-field="quant">
-                <span class="glyphicon glyphicon-minus"></span>
-              </button>
-          </span>
-          <input type="number" name="quant" class="form-control input-number" id="number" value="" min="1" max="100">
-          <span class="input-group-btn">
-              <button type="button" class="btn btn-success btn-number" data-type="plus" data-field="quant">
-                  <span class="glyphicon glyphicon-plus"></span>
-              </button>
-          </span>
-        </div>
-        <br>
-        <div class="form-group">
-        <div class="input-group">
-            <span class="input-group-addon primary"><span class="glyphicon glyphicon-star"></span></span>
-            <input type="text" class="form-control" id="ghi_chu" placeholder="Ghi chú" name="ghi_chu">
-      </div>
-      </div>
-          <input type="number" name="id_receipt" id="id_receipt" hidden="" value="">
-          <input type="number" name="id_order" id="id_order" hidden="" value="">
-        </center> 
-        </form>   
+          <textarea style="height: 80px; margin-bottom: 15px; margin-top: 15px;" class="form-control" name="content" id="content" required=""></textarea>
+          <input type="number" name="id_comment" id="id_comment" hidden="" value="">
+        </center>  
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
         <button type="submit" class="btn btn-success" onclick="submitForm();">Đồng ý</button>
       </div>
-      
+      </form>  
     </div>
   </div>
 </div>
 <script>
-function edit_comment_food(id_comment,tr_food,tr_comment) {
-  document.getElementById("id_order").value = id_order;
-  document.getElementById("id_receipt").value = id_receipt;
-  var tr = document.getElementById(tr_id);
-  var tds = tr.getElementsByTagName("td");
-  document.getElementById("number").value = tds[3].innerHTML;
-  // var ghi_chu = document.getElementById(id_order).innerHTML;
-  document.getElementById("ghi_chu").value = tds[4].innerHTML;    
+function edit_comment(id_comment,url,content,tr_comment) {
+  document.getElementById("id_comment").value = id_comment;
+  document.getElementById("content").innerHTML = content;
+  document.getElementById("edit_comment").action = url;
+  // var tr = document.getElementById(tr_id);
+  // var tds = tr.getElementsByTagName("td");
+  // document.getElementById("number").value = tds[3].innerHTML;
+  // // var ghi_chu = document.getElementById(id_order).innerHTML;
+  // document.getElementById("ghi_chu").value = tds[4].innerHTML;    
+}
+function delete_comment(id_comment,url,tr_comment){
+  alertify.confirm("Bạn chắc chắn muốn xóa?", function (e) {
+    if (e) {
+      $.ajax({
+        url: url + id_comment,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            },
+         success: function (response) {
+          var tr = tr_comment.parentNode.parentNode;
+          tr.remove();
+          alertify.success("Đã xóa thành công!");
+        }
+      });
+    }
+  });
 }
   function update(id_food,a_tag){
     alertify.confirm("Bạn chắc chắn muốn bỏ lưu?", function (e) {

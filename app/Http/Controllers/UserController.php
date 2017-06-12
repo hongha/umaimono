@@ -182,4 +182,34 @@ class UserController extends Controller
         }
         return response()->json($receipt);
     }
+    public function edit_comment_food(Request $request){
+        $comment_food = CommentFood::find($request->id_comment);
+        $comment_food->content = $request->content;
+        $comment_food->save();
+        return redirect()->back();
+    }
+    public function delete_comment_food($id_comment = null){
+        $comment_food = CommentFood::find($id_comment);
+        $comment_food->delete_flg = 1;
+        $comment_food->save();
+        return redirect()->back();
+    }
+    public function edit_comment_post(Request $request){
+        $comment_post = CommentPost::find($request->id_comment);
+        $comment_post->content = $request->content;
+        $comment_post->save();
+        return redirect()->back();
+    }
+    public function delete_comment_post($id_comment = null){
+        $comment_post = CommentPost::find($id_comment);
+        $comment_post->delete_flg = 1;
+        $comment_post->save();
+        return redirect()->back();
+    }
+    public function like(){
+        $user = User::find(Auth::user()->id);
+        $like_foods = DB::table('like_foods')->where('id_user', Auth::user()->id)->where('delete_flg','!=',1)->get();
+        $like_posts = DB::table('like_posts')->where('id_user', Auth::user()->id)->where('delete_flg','!=',1)->get();
+        return view('shopper.like', compact('like_foods','like_posts','user'));
+    }
 }
